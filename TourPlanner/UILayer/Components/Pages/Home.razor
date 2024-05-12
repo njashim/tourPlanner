@@ -1,7 +1,52 @@
 ﻿@page "/"
 
 <PageTitle>Home</PageTitle>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" crossorigin="anonymous"></script>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" method="get" class="mb-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Suchen..." name="q">
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </div>
+            </form>
+            @* Linker/Erster Teil *@
+            <form action="/deine/action/url" method="post" class="p-4">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="from" class="form-label">From:</label>
+                        <input type="text" id="from" name="from" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="to" class="form-label">To:</label>
+                        <input type="text" id="to" name="to" class="form-control">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="tourname" class="form-label">Tourname:</label>
+                    <input type="text" id="tourname" name="tourname" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="tourdescription" class="form-label">TourDescription:</label>
+                    <textarea id="tourdescription" name="tourdescription" class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <!-- Zweiter Teil der Seite -->
+            <h2>Zweiter Teil</h2>
+            <!-- Hier kannst du den Inhalt für den zweiten Teil einfügen -->
+        </div>
+    </div>
+</div>
+
+
+
+
