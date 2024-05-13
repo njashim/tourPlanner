@@ -8,15 +8,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <form action="#" method="get" class="mb-3">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Suchen..." name="q">
-                    <button type="submit" class="btn btn-primary">
-                        Search
-                    </button>
-                </div>
-            </form>
-            @* Linker/Erster Teil *@
+            <div class="text-center">
+                <h2>Erster Teil</h2>
+            </div>
+            <!-- Linker/Erster Teil -->
             <form action="/deine/action/url" method="post" class="p-4">
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -36,16 +31,52 @@
                     <label for="tourdescription" class="form-label">TourDescription:</label>
                     <textarea id="tourdescription" name="tourdescription" class="form-control"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-danger">Submit</button>
+                <button type="submit" class="btn btn-primary">Reset</button>
             </form>
+
+            <form action="#" method="get" class="mb-3" style="margin-top:20px">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Suchen..." name="q">
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Column 1</th>
+                        <th scope="col">Column 2</th>
+                        <th scope="col">Column 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Example Data 1</td>
+                        <td>Example Data 2</td>
+                        <td>Example Data 3</td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
         <div class="col-md-6">
             <!-- Zweiter Teil der Seite -->
-            <h2>Zweiter Teil</h2>
-            <!-- Hier kannst du den Inhalt für den zweiten Teil einfügen -->
+            <div class="text-center">
+                <h2>Zweiter Teil</h2>
+            </div>
+            <!-- Platzhalter für die Karte -->
+            <div id="map" style="height: 300px; background-color: lightgray;"> </div>
         </div>
     </div>
 </div>
+
+
+
 
 
 
