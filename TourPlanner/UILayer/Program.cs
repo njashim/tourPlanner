@@ -1,3 +1,10 @@
+using DataAccessLayer.Entity.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
 using UILayer.Components;
 
 namespace UILayer
@@ -12,18 +19,41 @@ namespace UILayer
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            var configuration = builder.Configuration;
+
+            // Configure logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+
+            // Register the DbContext with the connection string
+            builder.Services.AddDbContext<TourPlannerContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("TourPlannerDBConnection")),
+                ServiceLifetime.Scoped);
+
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<TourPlannerContext>();
+                try
+                {
+                    db.Database.Migrate();
+                }
+                catch (Npgsql.NpgsqlException ex)
+                {
+                    app.Logger.LogError(ex, "An error occurred while migrating the database.");
+                    throw;
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
             app.UseAntiforgery();
 
