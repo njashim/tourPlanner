@@ -7,9 +7,6 @@ namespace DataAccessLayer.Entity.Context;
 
 public partial class TourPlannerContext : DbContext
 {
-    public TourPlannerContext()
-    {
-    }
 
     public TourPlannerContext(DbContextOptions<TourPlannerContext> options)
         : base(options)
@@ -27,54 +24,48 @@ public partial class TourPlannerContext : DbContext
     {
         modelBuilder.Entity<Tour>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("tour_pkey");
+            entity.HasKey(e => e.Id).HasName("Tour_PK");
 
-            entity.ToTable("tour");
+            entity.ToTable("Tour");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.Distance).HasColumnName("distance");
-            entity.Property(e => e.Estimatedtime).HasColumnName("estimatedtime");
-            entity.Property(e => e.Fromlocation)
-                .HasMaxLength(100)
-                .HasColumnName("fromlocation");
+            entity.Property(e => e.Id).HasColumnName("Id");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .HasColumnName("name");
-            entity.Property(e => e.Routeimagepath)
-                .HasMaxLength(255)
-                .HasColumnName("routeimagepath");
-            entity.Property(e => e.Tolocation)
+                .HasColumnName("Name");
+            entity.Property(e => e.Description).HasColumnName("Description");
+            entity.Property(e => e.FromLocation)
                 .HasMaxLength(100)
-                .HasColumnName("tolocation");
-            entity.Property(e => e.Transporttype)
-                .HasMaxLength(50)
-                .HasColumnName("transporttype");
+                .HasColumnName("FromLocation");
+            entity.Property(e => e.ToLocation)
+                .HasMaxLength(100)
+                .HasColumnName("ToLocation");
+            entity.Property(e => e.TransportType).HasColumnName("TransportType");
+            entity.Property(e => e.Distance).HasColumnName("Distance");
+            entity.Property(e => e.EstimatedTime).HasColumnName("EstimatedTime");
+            entity.Property(e => e.RouteImagePath).HasColumnName("RouteImagePath");
         });
 
         modelBuilder.Entity<TourLog>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("tourlog_pkey");
+            entity.HasKey(e => e.Id).HasName("TourLog_PK");
 
-            entity.ToTable("tourlog");
+            entity.ToTable("TourLog");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Comment).HasColumnName("comment");
-            entity.Property(e => e.Datetime)
+            entity.Property(e => e.Id).HasColumnName("Id");
+            entity.Property(e => e.TourId).HasColumnName("TourId");
+            entity.Property(e => e.DateTime)
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("datetime");
-            entity.Property(e => e.Difficulty)
-                .HasMaxLength(50)
-                .HasColumnName("difficulty");
-            entity.Property(e => e.Rating).HasColumnName("rating");
-            entity.Property(e => e.Totaldistance).HasColumnName("totaldistance");
-            entity.Property(e => e.Totaltime).HasColumnName("totaltime");
-            entity.Property(e => e.Tourid).HasColumnName("tourid");
+                .HasColumnName("DateTime");
+            entity.Property(e => e.Comment).HasColumnName("Comment");
+            entity.Property(e => e.Difficulty).HasColumnName("Difficulty");
+            entity.Property(e => e.TotalDistance).HasColumnName("TotalDistance");
+            entity.Property(e => e.TotalTime).HasColumnName("TotalTime");
+            entity.Property(e => e.Rating).HasColumnName("Rating");
 
-            entity.HasOne(d => d.Tour).WithMany(p => p.Tourlogs)
-                .HasForeignKey(d => d.Tourid)
+            entity.HasOne(d => d.Tour).WithMany(p => p.TourLogs)
+                .HasForeignKey(d => d.TourId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("tourlog_tourid_fkey");
+                .HasConstraintName("TourLog_TourId_FK");
         });
 
         OnModelCreatingPartial(modelBuilder);

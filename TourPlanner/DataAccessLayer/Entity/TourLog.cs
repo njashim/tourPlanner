@@ -12,15 +12,22 @@ public class TourLog
     public Guid Id { get; set; }
 
     [Required]
+    public Guid TourId { get; set; }
+
+    [ForeignKey("TourId")]
+    public Tour Tour { get; set; } = null!;
+
+    [Required]
     [DataType(DataType.Date)]
     public DateTime DateTime { get; set; }
 
     public string? Comment { get; set; }
 
     [Required]
-    public string Difficulty { get; set; } = null!;
+    public int Difficulty { get; set; }
 
     [Required]
+    [Column(TypeName = "double precision")]
     public double TotalDistance { get; set; }
 
     [Required]
@@ -28,7 +35,4 @@ public class TourLog
 
     [Required]
     public int Rating { get; set; }
-
-    public Guid TourId { get; set; }
-    [ForeignKey("TourId")] public Tour Tour { get; set; } = null!;
 }

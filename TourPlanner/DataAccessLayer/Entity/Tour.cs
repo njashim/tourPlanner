@@ -19,20 +19,24 @@ public class Tour
     public Guid Id { get; set; }
 
     [Required]
+    [MaxLength(100)]
     public string Name { get; set; } = null!;
 
     public string? Description { get; set; }
 
     [Required]
+    [MaxLength(100)]
     public string FromLocation { get; set; } = null!;
 
     [Required]
+    [MaxLength(100)]
     public string ToLocation { get; set; } = null!;
 
     [Required]
     public string TransportType { get; set; } = null!;
 
     [Required]
+    [Column(TypeName = "double precision")]
     public double Distance { get; set; }
 
     [Required]
