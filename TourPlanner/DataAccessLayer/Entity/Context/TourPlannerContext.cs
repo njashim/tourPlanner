@@ -18,7 +18,7 @@ public partial class TourPlannerContext : DbContext
 
     public virtual DbSet<Tour> Tours { get; set; }
 
-    public virtual DbSet<Tourlog> Tourlogs { get; set; }
+    public virtual DbSet<TourLog> TourLogs { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("Name=ConnectionStrings:TourPlannerDBConnection");
@@ -52,7 +52,7 @@ public partial class TourPlannerContext : DbContext
                 .HasColumnName("transporttype");
         });
 
-        modelBuilder.Entity<Tourlog>(entity =>
+        modelBuilder.Entity<TourLog>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("tourlog_pkey");
 

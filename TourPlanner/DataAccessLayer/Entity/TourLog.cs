@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace DataAccessLayer.Entity;
 
-public partial class Tourlog
+public class TourLog
 {
     public int Id { get; set; }
 
-    public int? Tourid { get; set; }
+    public int? TourId { get; set; }
 
     public DateTime Datetime { get; set; }
 
