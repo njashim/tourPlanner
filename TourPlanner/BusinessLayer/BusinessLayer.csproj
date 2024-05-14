@@ -18,4 +18,9 @@
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mapping\" />
+    <Folder Include="Service\Interface\" />
+  </ItemGroup>
+
 </Project>
