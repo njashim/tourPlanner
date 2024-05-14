@@ -1,0 +1,116 @@
+﻿@page "/Log"
+@rendermode InteractiveServer
+
+<PageTitle>Log</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="text-center">
+                <h4><b>Your Tour Log</b></h4>
+            </div>
+            <!-- Linker/Erster Teil -->
+            <form action="/deine/action/url" method="post" class="p-4">
+                <div class="mb-3">
+                    <label for="tour" class="form-label">Tour:</label>
+                    <select id="tour" name="tour" class="form-select" required>
+                        <option value="" disabled selected>Select Tour</option>
+                        <option value="kommtNoch">kommt noch</option>
+                        <!-- <option value="bus">Bus</option>
+                        <option value="train">Train</option>
+                        <option value="plane">Plane</option> -->
+                        <!-- Weitere Optionen hier einfügen -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="datum" class="form-label">Datum:</label>
+                    <input type="date" id="datum" name="datum" class="form-control" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="difficulty" class="form-label">Difficulty:</label>
+                        <select id="difficulty" name="difficulty" class="form-select" required>
+                            <option value="" disabled selected>Tour Difficulty</option>
+                            <option value="1">1 (very difficult)</option>
+                            <option value="2">2 (difficult)</option>
+                            <option value="3">3 (okay)</option>
+                            <option value="4">4 (easy)</option>
+                            <option value="5">5 (very easy)</option>
+                            <!-- Weitere Optionen hier einfügen -->
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="rating" class="form-label">Rating:</label>
+                        <select id="rating" name="rating" class="form-select" required>
+                            <option value="" disabled selected>Rate Tour</option>
+                            <option value="1">1 (very bad)</option>
+                            <option value="2">2 (bad)</option>
+                            <option value="3">3 (okay)</option>
+                            <option value="4">4 (good)</option>
+                            <option value="5">5 (very good)</option>
+                            <!-- Weitere Optionen hier einfügen -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="zahl" class="form-label">Total Distance in m:</label>
+                        <div class="input-group">
+                            <input type="number" id="zahl" name="zahl" class="form-control" min="0" max="100" step="1" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="zahl" class="form-label">Total Time in min:</label>
+                        <div class="input-group">
+                            <input type="number" id="zahl" name="zahl" class="form-control" min="0" max="100" step="1" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Comment:</label>
+                    <textarea id="comment" name="comment" class="form-control" style="height:10px"></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger">Submit</button>
+                <button type="submit" class="btn btn-primary">Reset</button>
+            </form>
+
+            <form action="#" method="get" class="mb-3" style="margin-top:20px">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Suchen..." name="q">
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Column 1</th>
+                        <th scope="col">Column 2</th>
+                        <th scope="col">Column 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Example Data 1</td>
+                        <td>Example Data 2</td>
+                        <td>Example Data 3</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-md-6">
+            <!-- Zweiter Teil der Seite -->
+            <div class="text-center">
+                <h4><b>Log Details</b></h4>
+            </div>
+        </div>
+    </div>
+</div>
+

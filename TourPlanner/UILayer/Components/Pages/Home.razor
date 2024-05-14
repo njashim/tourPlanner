@@ -9,10 +9,11 @@
     <div class="row">
         <div class="col-md-6">
             <div class="text-center">
-                <h2>Erster Teil</h2>
+                <h4><b>Your Tour</b></h4>
             </div>
             <!-- Linker/Erster Teil -->
             <form action="/deine/action/url" method="post" class="p-4">
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="from" class="form-label">From:</label>
@@ -24,12 +25,22 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="tourname" class="form-label">Tourname:</label>
+                    <label for="transporttype" class="form-label">Transport Type:</label>
+                    <select id="transporttype" name="transporttype" class="form-select">
+                        <option value="car">Car</option>
+                        <option value="bicycle">Bicycle</option>
+                        <option value="byFoot">By foot</option>
+                        <option value="publicTransport">Public transport</option>
+                        <!-- Weitere Optionen hier einfügen -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="tourname" class="form-label">Name of Tour:</label>
                     <input type="text" id="tourname" name="tourname" class="form-control">
                 </div>
                 <div class="mb-3">
-                    <label for="tourdescription" class="form-label">TourDescription:</label>
-                    <textarea id="tourdescription" name="tourdescription" class="form-control"></textarea>
+                    <label for="tourdescription" class="form-label">Description of Tour:</label>
+                    <textarea id="tourdescription" name="tourdescription" class="form-control" style="height:10px"></textarea>
                 </div>
                 <button type="submit" class="btn btn-danger">Submit</button>
                 <button type="submit" class="btn btn-primary">Reset</button>
@@ -67,7 +78,7 @@
         <div class="col-md-6">
             <!-- Zweiter Teil der Seite -->
             <div class="text-center">
-                <h2>Zweiter Teil</h2>
+                <h4><b>Tour Details</b></h4>
             </div>
             <!-- Platzhalter für die Karte -->
             <div id="map" style="height: 300px; background-color: lightgray;"> </div>
