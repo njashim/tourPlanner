@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Entity;
 using DataAccessLayer.Entity.Context;
+using DataAccessLayer.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repository
 {
-    public class TourRepository
+    public class TourRepository : ITourRepository
     {
         private readonly TourPlannerContext _context;
 
@@ -31,9 +32,9 @@ namespace DataAccessLayer.Repository
             return await _context.Tours.ToListAsync();
         }
 
-        public async Task<Tour> GetTourByIdAsync(int tourId)
+        public Tour? GetTourById(Guid tourId)
         {
-            return await _context.Tours.FindAsync(tourId);
+            return _context.Tours.Find(tourId);
         }
 
         public async Task<Tour> UpdateTourAsync(Tour updatedTour)
@@ -44,7 +45,7 @@ namespace DataAccessLayer.Repository
             return updatedTour;
         }
 
-        public async Task DeleteTourAsync(int tourId)
+        public async Task DeleteTourAsync(Guid tourId)
         {
             var tour = await _context.Tours.FindAsync(tourId);
             if (tour != null)

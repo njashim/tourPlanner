@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using DataAccessLayer.Repository.Interface;
 
 namespace DataAccessLayer.Repository
 {
-    public class TourLogRepository
+    public class TourLogRepository : ITourLogRepository
     {
         private readonly TourPlannerContext _context;
 
@@ -31,9 +32,9 @@ namespace DataAccessLayer.Repository
             return await _context.TourLogs.ToListAsync();
         }
 
-        public async Task<TourLog> GetTourLogByIdAsync(int tourLogId)
+        public TourLog? GetTourLogById(Guid tourLogId)
         {
-            return await _context.TourLogs.FindAsync(tourLogId);
+            return _context.TourLogs.Find(tourLogId);
         }
 
         public async Task<TourLog> UpdateTourLogAsync(TourLog updatedTourLog)
@@ -44,7 +45,7 @@ namespace DataAccessLayer.Repository
             return updatedTourLog;
         }
 
-        public async Task DeleteTourLogAsync(int tourLogId)
+        public async Task DeleteTourLogAsync(Guid tourLogId)
         {
             var tourLog = await _context.TourLogs.FindAsync(tourLogId);
             if (tourLog != null)
