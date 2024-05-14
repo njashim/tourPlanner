@@ -16,7 +16,7 @@ public class Tour
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Guid { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
     public string Name { get; set; } = null!;
