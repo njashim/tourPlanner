@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccessLayer.Entity;
 
-public partial class Tour
+public class Tour
 {
     public int Id { get; set; }
 
@@ -23,5 +23,5 @@ public partial class Tour
 
     public string Routeimagepath { get; set; } = null!;
 
-    public virtual ICollection<Tourlog> Tourlogs { get; set; } = new List<Tourlog>();
+    public virtual ICollection<TourLog> TourLogs { get; set; } = new List<TourLog>();
 }
