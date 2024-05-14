@@ -1,27 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccessLayer.Entity;
 
 public class Tour
 {
-    public int Id { get; set; }
+    public IEnumerable<TourLog> TourLogs { get; set; }
 
+    public Tour()
+    {
+        TourLogs = new List<TourLog>();
+    }
+
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Guid { get; set; }
+
+    [Required]
     public string Name { get; set; } = null!;
 
     public string? Description { get; set; }
 
-    public string Fromlocation { get; set; } = null!;
+    [Required]
+    public string FromLocation { get; set; } = null!;
 
-    public string Tolocation { get; set; } = null!;
+    [Required]
+    public string ToLocation { get; set; } = null!;
 
-    public string Transporttype { get; set; } = null!;
+    [Required]
+    public string TransportType { get; set; } = null!;
 
+    [Required]
     public double Distance { get; set; }
 
-    public TimeSpan Estimatedtime { get; set; }
+    [Required]
+    public TimeSpan EstimatedTime { get; set; }
 
-    public string Routeimagepath { get; set; } = null!;
-
-    public virtual ICollection<TourLog> TourLogs { get; set; } = new List<TourLog>();
+    [Required]
+    public string RouteImagePath { get; set; } = null!;
 }
