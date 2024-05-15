@@ -20,20 +20,20 @@ public class Tour
 
     [Required]
     [MaxLength(100)]
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     public string? Description { get; set; }
 
     [Required]
     [MaxLength(100)]
-    public string FromLocation { get; set; } = null!;
+    public string FromLocation { get; set; } 
 
     [Required]
     [MaxLength(100)]
-    public string ToLocation { get; set; } = null!;
+    public string ToLocation { get; set; }
 
     [Required]
-    public string TransportType { get; set; } = null!;
+    public string TransportType { get; set; } 
 
     [Required]
     [Column(TypeName = "double precision")]
@@ -43,5 +43,5 @@ public class Tour
     public TimeSpan EstimatedTime { get; set; }
 
     [Required]
-    public string RouteImagePath { get; set; } = null!;
+    public string RouteImagePath { get; set; }
 }

@@ -1,7 +1,18 @@
 using AutoMapper;
 using BusinessLayer.Mapping;
 using DataAccessLayer.Entity.Context;
+using DataAccessLayer.Repository.Interface;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+using BusinessLayer.Service.Interface;
+using BusinessLayer.Service;
+using DataAccessLayer.Repository;
 using UILayer.Components;
 
 namespace UILayer
@@ -27,12 +38,12 @@ namespace UILayer
                 options.UseNpgsql(configuration.GetConnectionString("TourPlannerDBConnection")),
                 ServiceLifetime.Scoped);
 
-            var mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
+            // Register AutoMapper
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-            IMapper mapper = mapperConfiguration.CreateMapper();
+            // Register ITourRepository and ITourService
+            builder.Services.AddScoped<ITourRepository, TourRepository>();
+            builder.Services.AddScoped<ITourService, TourService>();
 
             var app = builder.Build();
 

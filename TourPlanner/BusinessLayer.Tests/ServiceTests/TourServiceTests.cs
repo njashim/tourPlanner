@@ -15,18 +15,18 @@ namespace BusinessLayer.Tests.ServiceTests
         private TourService _tourService;
 
         [SetUp]
-        public void SetUp()
-        {
-            _tourRepositoryMock = new Mock<ITourRepository>();
+        //public void SetUp()
+        //{
+        //    _tourRepositoryMock = new Mock<ITourRepository>();
 
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<BusinessLayer.Mapping.MappingProfile>();
-            });
-            _mapper = config.CreateMapper();
+        //    var config = new MapperConfiguration(cfg =>
+        //    {
+        //        cfg.AddProfile<BusinessLayer.Mapping.MappingProfile>();
+        //    });
+        //    _mapper = config.CreateMapper();
 
-            _tourService = new TourService(_tourRepositoryMock.Object, _mapper);
-        }
+        //    _tourService = new TourService(_tourRepositoryMock.Object, _mapper);
+        //}
 
         [Test]
         public async Task CreateTourAsync_ShouldReturnTourModel_WhenTourIsCreated()

@@ -1,10 +1,16 @@
-﻿using Model;
+﻿using DataAccessLayer.Entity;
+using Model;
 
 namespace BusinessLayer.Service.Interface
 {
     public interface ITourService
     {
-        Task<TourModel> CreateTourAsync(TourModel newTourModel);
+
+        List<Tour> Tours { get; set; }
+        Tour? newTour { get; set; }
+
+       
+
 
         List<TourModel> GetTours();
 
@@ -13,5 +19,7 @@ namespace BusinessLayer.Service.Interface
         Task<TourModel> UpdateTourAsync(TourModel updatedTourModel);
 
         Task DeleteTourAsync(Guid tourModelId);
+
+        Task CreateTourAsync();
     }
 }
