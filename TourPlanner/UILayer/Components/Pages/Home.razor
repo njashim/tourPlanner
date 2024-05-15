@@ -18,32 +18,32 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="from" class="form-label">From:</label>
-                    <input id="from" class="form-control" @bind="TourService.newTour.FromLocation" />
+                    <input id="from" class="form-control" @bind="_tourModel.FromLocation" />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="to" class="form-label">To:</label>
-                    <input id="to" class="form-control" @bind="TourService.newTour.ToLocation" />
+                    <input id="to" class="form-control" @bind="_tourModel.ToLocation" />
                 </div>
             </div>
-            <div class="mb-3">
+           @*  <div class="mb-3">
                 <label for="transporttype" class="form-label">Transport Type:</label>
-                <select id="transporttype" name="transporttype" class="form-select" @bind="TourService.newTour.TransportType">
+                <select id="transporttype" name="transporttype" class="form-select" @bind="_tourModel.TransportType">
                     <option value="car">Car</option>
                     <option value="bicycle">Bicycle</option>
                     <option value="byFoot">By foot</option>
                     <option value="publicTransport">Public transport</option>
                     <!-- Weitere Optionen hier einfügen -->
                 </select>
-            </div>
+            </div> *@
             <div class="mb-3">
                 <label for="tourname" class="form-label">Name of Tour:</label>
-                <input id="tourname" class="form-control" @bind="TourService.newTour.Name" />
+                <input id="tourname" class="form-control" @bind="_tourModel.Name" />
             </div>
             <div class="mb-3">
                 <label for="tourdescription" class="form-label">Description of Tour:</label>
-                <input id="tourdescription" class="form-control" @bind="TourService.newTour.Description" style="height:100px" />
+                <input id="tourdescription" class="form-control" @bind="_tourModel.Description" style="height:100px" />
             </div>
-            <button class="btn btn-danger" @onclick="TourService.CreateTourAsync">Submit</button>
+            <button class="btn btn-danger" @onclick="CreateTourAsync">Submit</button>
             <button type="reset" class="btn btn-primary">Reset</button>
 
         </div>
@@ -56,4 +56,21 @@
     </div>
 </div>
 
+@code {
+    private TourModel _tourModel { get; set; }
 
+    protected override void OnInitialized()
+    {
+        _tourModel = new TourModel();
+    }
+
+    private async Task CreateTourAsync()
+    {
+        if (_tourModel != null)
+        {
+            _tourModel.RouteImagePath = "routeimagePath";
+            _tourModel.TransportType = "transport";
+            await TourService.CreateTourAsync(_tourModel);
+        }
+    }
+}

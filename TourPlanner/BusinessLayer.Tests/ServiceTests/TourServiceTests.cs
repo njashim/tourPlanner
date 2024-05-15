@@ -15,21 +15,21 @@ namespace BusinessLayer.Tests.ServiceTests
         private TourService _tourService;
 
         [SetUp]
-        //public void SetUp()
-        //{
-        //    _tourRepositoryMock = new Mock<ITourRepository>();
+        public void SetUp()
+        {
+            _tourRepositoryMock = new Mock<ITourRepository>();
 
-        //    var config = new MapperConfiguration(cfg =>
-        //    {
-        //        cfg.AddProfile<BusinessLayer.Mapping.MappingProfile>();
-        //    });
-        //    _mapper = config.CreateMapper();
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<BusinessLayer.Mapping.MappingProfile>();
+            });
+            _mapper = config.CreateMapper();
 
-        //    _tourService = new TourService(_tourRepositoryMock.Object, _mapper);
-        //}
+            _tourService = new TourService(_tourRepositoryMock.Object, _mapper);
+        }
 
         [Test]
-        public async Task CreateTourAsync_ShouldReturnTourModel_WhenTourIsCreated()
+        public async Task CreateTourAsync_ShouldCreateTour_WhenTourIsCreated()
         {
             var newTourModel = new TourModel
             {
@@ -53,17 +53,17 @@ namespace BusinessLayer.Tests.ServiceTests
             };
 
             _tourRepositoryMock.Setup(repo => repo.CreateTourAsync(It.IsAny<Tour>()))
-                               .ReturnsAsync(createdTour);
+                               .Callback<Tour>(tour => createdTour = tour);
 
-            var result = await _tourService.CreateTourAsync(newTourModel);
+            await _tourService.CreateTourAsync(newTourModel);
 
-            Assert.That(result.Id, Is.EqualTo(createdTour.Id));
-            Assert.That(result.Name, Is.EqualTo(createdTour.Name));
-            Assert.That(result.FromLocation, Is.EqualTo(createdTour.FromLocation));
-            Assert.That(result.ToLocation, Is.EqualTo(createdTour.ToLocation));
-            Assert.That(result.TransportType, Is.EqualTo(createdTour.TransportType));
-            Assert.That(result.Distance, Is.EqualTo(createdTour.Distance));
-            Assert.That(result.EstimatedTime, Is.EqualTo(createdTour.EstimatedTime));
+            Assert.That(createdTour, Is.Not.Null);
+            Assert.That(createdTour.Name, Is.EqualTo(newTourModel.Name));
+            Assert.That(createdTour.FromLocation, Is.EqualTo(newTourModel.FromLocation));
+            Assert.That(createdTour.ToLocation, Is.EqualTo(newTourModel.ToLocation));
+            Assert.That(createdTour.TransportType, Is.EqualTo(newTourModel.TransportType));
+            Assert.That(createdTour.Distance, Is.EqualTo(newTourModel.Distance));
+            Assert.That(createdTour.EstimatedTime, Is.EqualTo(newTourModel.EstimatedTime));
         }
 
         [Test]

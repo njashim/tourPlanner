@@ -10,7 +10,7 @@ namespace DataAccessLayer.Repository.Interface
 {
     public interface ITourRepository
     {
-        Task<Tour> CreateTourAsync(Tour newTour);
+        Task CreateTourAsync(Tour newTour);
 
         List<Tour> GetTours();
 

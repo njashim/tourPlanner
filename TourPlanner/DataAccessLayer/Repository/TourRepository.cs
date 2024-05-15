@@ -19,12 +19,10 @@ namespace DataAccessLayer.Repository
             _context = context;
         }
 
-        public async Task<Tour> CreateTourAsync(Tour newTour)
+        public async Task CreateTourAsync(Tour newTour)
         {
             _context.Tours.Add(newTour);
             await _context.SaveChangesAsync();
-
-            return newTour;
         }
 
         public List<Tour> GetTours()

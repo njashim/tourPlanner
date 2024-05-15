@@ -1,138 +1,57 @@
-﻿using BusinessLayer.Service.Interface;
+﻿using AutoMapper;
+using BusinessLayer.Service.Interface;
 using DataAccessLayer.Entity;
-using DataAccessLayer.Entity.Context;
-using Microsoft.EntityFrameworkCore;
+using DataAccessLayer.Repository.Interface;
 using Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BusinessLayer.Service
 {
     public class TourService : ITourService
     {
-        private readonly TourPlannerContext _context;
+        private readonly IMapper _mapper;
+        private readonly ITourRepository _tourRepository;
 
-        public List<Tour> Tours { get; set; } = new List<Tour>();
-
-        public Tour? newTour { get; set; } = new Tour();
-
-        public TourService(TourPlannerContext context)
+        public TourService(ITourRepository tourRepository, IMapper mapper)
         {
-            _context = context;
+            _tourRepository = tourRepository;
+            _mapper = mapper;
         }
 
-        public async Task CreateTourAsync()
+        public async Task CreateTourAsync(TourModel newTourModel)
         {
-            if (newTour is null)
-            {
-                return;
-            }
-
-            try
-            {
-                newTour.RouteImagePath = "MussGeandertWerden";
-                _context.Tours.Add(newTour);
-                await _context.SaveChangesAsync();
-
-            }
-            catch (Exception e)
-            {
-
-            }
+            var tour = _mapper.Map<Tour>(newTourModel);
+            await _tourRepository.CreateTourAsync(tour);
         }
-          
 
         public List<TourModel> GetTours()
         {
-            var tours = _context.Tours.ToList();
-            var tourModels = new List<TourModel>();
+            var tours = _tourRepository.GetTours();
+            var toursModel = _mapper.Map<List<TourModel>>(tours);
 
-            foreach (var tour in tours)
-            {
-                tourModels.Add(new TourModel
-                {
-                    Id = tour.Id,
-                    Name = tour.Name,
-                    Description = tour.Description,
-                    FromLocation = tour.FromLocation,
-                    ToLocation = tour.ToLocation,
-                    TransportType = tour.TransportType,
-                    Distance = tour.Distance,
-                    EstimatedTime = tour.EstimatedTime,
-                    RouteImagePath = tour.RouteImagePath
-                });
-            }
-
-            return tourModels;
+            return toursModel;
         }
 
         public TourModel GetTourById(Guid tourModelId)
         {
-            var tour = _context.Tours.Find(tourModelId);
-            if (tour == null)
-                return null;
-
-            var tourModel = new TourModel
-            {
-                Id = tour.Id,
-                Name = tour.Name,
-                Description = tour.Description,
-                FromLocation = tour.FromLocation,
-                ToLocation = tour.ToLocation,
-                TransportType = tour.TransportType,
-                Distance = tour.Distance,
-                EstimatedTime = tour.EstimatedTime,
-                RouteImagePath = tour.RouteImagePath
-            };
+            var tour = _tourRepository.GetTourById(tourModelId);
+            var tourModel = _mapper.Map<TourModel>(tour);
 
             return tourModel;
         }
 
         public async Task<TourModel> UpdateTourAsync(TourModel updatedTourModel)
         {
-            var tour = await _context.Tours.FindAsync(updatedTourModel.Id);
-            if (tour == null)
-                throw new Exception("Tour not found");
+            var tour = _mapper.Map<Tour>(updatedTourModel);
+            var updatedTour = await _tourRepository.UpdateTourAsync(tour);
+            var tourModel = _mapper.Map<TourModel>(updatedTour);
 
-            tour.Name = updatedTourModel.Name;
-            tour.Description = updatedTourModel.Description;
-            tour.FromLocation = updatedTourModel.FromLocation;
-            tour.ToLocation = updatedTourModel.ToLocation;
-            tour.TransportType = updatedTourModel.TransportType;
-            tour.Distance = updatedTourModel.Distance;
-            tour.EstimatedTime = updatedTourModel.EstimatedTime;
-            tour.RouteImagePath = updatedTourModel.RouteImagePath;
-
-            _context.Tours.Update(tour);
-            await _context.SaveChangesAsync();
-
-            return new TourModel
-            {
-                Id = tour.Id,
-                Name = tour.Name,
-                Description = tour.Description,
-                FromLocation = tour.FromLocation,
-                ToLocation = tour.ToLocation,
-                TransportType = tour.TransportType,
-                Distance = tour.Distance,
-                EstimatedTime = tour.EstimatedTime,
-                RouteImagePath = tour.RouteImagePath
-            };
+            return tourModel;
         }
 
         public async Task DeleteTourAsync(Guid tourModelId)
         {
-            var tour = await _context.Tours.FindAsync(tourModelId);
-            if (tour == null)
-                throw new Exception("Tour not found");
-
-            _context.Tours.Remove(tour);
-            await _context.SaveChangesAsync();
+            await _tourRepository.DeleteTourAsync(tourModelId);
         }
-
-
     
         //public async Task HandleSubmit()
         //{
