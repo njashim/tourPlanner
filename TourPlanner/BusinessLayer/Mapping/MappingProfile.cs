@@ -8,11 +8,11 @@ namespace BusinessLayer.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Tour, TourModel>();
+            CreateMap<Tour, TourModel>().ReverseMap();
             CreateMap<TourLog, TourLogModel>();
 
-            CreateMap<TourModel, Tour>();
-            CreateMap<TourLogModel, TourLog>();
+            CreateMap<TourLogModel, TourLog>()
+                .ForMember(dest => dest.Tour, opt => opt.Ignore());
         }
     }
 }

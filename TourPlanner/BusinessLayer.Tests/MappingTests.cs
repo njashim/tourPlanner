@@ -1,4 +1,5 @@
 using AutoMapper;
+using BusinessLayer.Mapping;
 using DataAccessLayer.Entity;
 using Model;
 using NUnit.Framework;
@@ -19,6 +20,17 @@ namespace BusinessLayer.Tests.Mapping
                 cfg.AddProfile<BusinessLayer.Mapping.MappingProfile>();
             });
             _mapper = config.CreateMapper();
+        }
+
+        [Test]
+        public void MappingConfiguration_IsValid()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
+
+            config.AssertConfigurationIsValid();
         }
 
         [Test]
