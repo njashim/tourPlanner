@@ -46,6 +46,37 @@
             <button class="btn btn-danger" @onclick="CreateTourAsync">Submit</button>
             <button type="reset" class="btn btn-primary">Reset</button>
 
+            <form action="#" method="get" class="mb-3" style="margin-top:20px">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Suchen..." name="q">
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">From</th>
+                        <th scope="col">To</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tour in _tourList)
+                    {
+                        <tr>
+                            <td>@tour.FromLocation</td>
+                            <td>@tour.ToLocation</td>
+                            <td>@tour.Name</td>
+                            <td>@tour.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
         </div>
         <div class="col-md-6">
             <div class="text-center">
@@ -58,10 +89,12 @@
 
 @code {
     private TourModel _tourModel { get; set; }
+    private List<TourModel> _tourList { get; set; }
 
     protected override void OnInitialized()
     {
         _tourModel = new TourModel();
+        LoadTourData();
     }
 
     private async Task CreateTourAsync()
@@ -71,6 +104,12 @@
             _tourModel.RouteImagePath = "routeimagePath";
             _tourModel.TransportType = "transport";
             await TourService.CreateTourAsync(_tourModel);
+            LoadTourData();
         }
+    }
+
+    private void LoadTourData()
+    {
+        _tourList = TourService.GetTours(); // No need to await here
     }
 }
