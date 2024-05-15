@@ -1,10 +1,7 @@
+using AutoMapper;
+using BusinessLayer.Mapping;
 using DataAccessLayer.Entity.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
 using UILayer.Components;
 
 namespace UILayer
@@ -29,6 +26,13 @@ namespace UILayer
             builder.Services.AddDbContext<TourPlannerContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("TourPlannerDBConnection")),
                 ServiceLifetime.Scoped);
+
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
+
+            IMapper mapper = mapperConfiguration.CreateMapper();
 
             var app = builder.Build();
 

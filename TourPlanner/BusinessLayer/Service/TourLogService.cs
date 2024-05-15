@@ -1,43 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using BusinessLayer.Service.Interface;
+using DataAccessLayer.Entity;
+using DataAccessLayer.Repository.Interface;
+using Model;
 
 namespace BusinessLayer.Service
 {
-    public class TourLogService
+    public class TourLogService : ITourLogService
     {
-        //private readonly TourLogRepository _tourLogRepository;
+        private readonly IMapper _mapper;
+        private readonly ITourLogRepository _tourLogRepository;
 
-        //public TourLogService(TourLogRepository tourLogRepository)
-        //{
-        //    _tourLogRepository = tourLogRepository;
-        //}
+        public TourLogService(ITourLogRepository tourLogRepository, IMapper mapper)
+        {
+            _tourLogRepository = tourLogRepository;
+            _mapper = mapper;
+        }
 
-        //public async Task<TourLog> CreateTourLogAsync(TourLog newTourLog)
-        //{
-        //    return await _tourLogRepository.CreateTourLogAsync(newTourLog);
-        //}
+        public async Task<TourLogModel> CreateTourLogAsync(TourLogModel newTourLogModel)
+        {
+            var tourLog = _mapper.Map<TourLog>(newTourLogModel);
+            var newTourLog = await _tourLogRepository.CreateTourLogAsync(tourLog);
+            var tourLogModel = _mapper.Map<TourLogModel>(newTourLog);
 
-        //public async Task<List<TourLog>> GetTourLogsAsync()
-        //{
-        //    return await _tourLogRepository.GetTourLogsAsync();
-        //}
+            return tourLogModel;
+        }
 
-        //public async Task<TourLog> GetTourLogByIdAsync(int tourLogId)
-        //{
-        //    return await _tourLogRepository.GetTourLogByIdAsync(tourLogId);
-        //}
+        public List<TourLogModel> GetTourLogs()
+        {
+            var tourLogs = _tourLogRepository.GetTourLogs();
+            var tourLogsModel = _mapper.Map<List<TourLogModel>>(tourLogs);
 
-        //public async Task<TourLog> UpdateTourLogAsync(TourLog updatedTourLog)
-        //{
-        //    return await _tourLogRepository.UpdateTourLogAsync(updatedTourLog);
-        //}
+            return tourLogsModel;
+        }
 
-        //public async Task DeleteTourLogAsync(int tourLogId)
-        //{
-        //    await _tourLogRepository.DeleteTourLogAsync(tourLogId);
-        //}
+        public TourLogModel GetTourLogById(Guid tourLogModelId)
+        {
+            var tourLog = _tourLogRepository.GetTourLogById(tourLogModelId);
+            var tourLogModel = _mapper.Map<TourLogModel>(tourLog);
+
+            return tourLogModel;
+        }
+
+        public async Task<TourLogModel> UpdateTourLogAsync(TourLogModel updatedTourLogModel)
+        {
+            var tourLog = _mapper.Map<TourLog>(updatedTourLogModel);
+            var updateTourLog = await _tourLogRepository.UpdateTourLogAsync(tourLog);
+            var tourLogModel = _mapper.Map<TourLogModel>(updateTourLog);
+
+            return tourLogModel;
+        }
+
+        public async Task DeleteTourLogAsync(Guid tourLogModelId)
+        {
+            await _tourLogRepository.DeleteTourLogAsync(tourLogModelId);
+        }
     }
 }

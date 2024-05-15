@@ -1,43 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using BusinessLayer.Service.Interface;
+using DataAccessLayer.Entity;
+using DataAccessLayer.Repository.Interface;
+using Model;
 
 namespace BusinessLayer.Service
 {
-    public class TourService
+    public class TourService : ITourService
     {
-        //private readonly TourRepository _tourRepository;
+        private readonly IMapper _mapper;
+        private readonly ITourRepository _tourRepository;
 
-        //public TourService(TourRepository tourRepository)
-        //{
-        //    _tourRepository = tourRepository;
-        //}
+        public TourService(ITourRepository tourRepository, IMapper mapper)
+        {
+            _tourRepository = tourRepository;
+            _mapper = mapper;
+        }
 
-        //public async Task<Tour> CreateTourAsync(Tour newTour)
-        //{
-        //    return await _tourRepository.CreateTourAsync(newTour);
-        //}
+        public async Task<TourModel> CreateTourAsync(TourModel newTourModel)
+        {
+            var tour = _mapper.Map<Tour>(newTourModel);
+            var newTour = await _tourRepository.CreateTourAsync(tour);
+            var tourModel = _mapper.Map<TourModel>(newTour);
 
-        //public async Task<List<Tour>> GetToursAsync()
-        //{
-        //    return await _tourRepository.GetToursAsync();
-        //}
+            return tourModel;
+        }
 
-        //public async Task<Tour> GetTourByIdAsync(int tourId)
-        //{
-        //    return await _tourRepository.GetTourByIdAsync(tourId);
-        //}
+        public List<TourModel> GetTours()
+        {
+            var tours = _tourRepository.GetTours();
+            var toursModel = _mapper.Map<List<TourModel>>(tours);
 
-        //public async Task<Tour> UpdateTourAsync(Tour updatedTour)
-        //{
-        //    return await _tourRepository.UpdateTourAsync(updatedTour);
-        //}
+            return toursModel;
+        }
 
-        //public async Task DeleteTourAsync(int tourId)
-        //{
-        //    await _tourRepository.DeleteTourAsync(tourId);
-        //}
+        public TourModel GetTourById(Guid tourModelId)
+        {
+            var tour = _tourRepository.GetTourById(tourModelId);
+            var tourModel = _mapper.Map<TourModel>(tour);
+
+            return tourModel;
+        }
+
+        public async Task<TourModel> UpdateTourAsync(TourModel updatedTourModel)
+        {
+            var tour = _mapper.Map<Tour>(updatedTourModel);
+            var updatedTour = await _tourRepository.UpdateTourAsync(tour);
+            var tourModel = _mapper.Map<TourModel>(updatedTour);
+
+            return tourModel;
+        }
+
+        public async Task DeleteTourAsync(Guid tourModelId)
+        {
+            await _tourRepository.DeleteTourAsync(tourModelId);
+        }
     }
 }

@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Model;
 
 namespace BusinessLayer.Service.Interface
 {
     public interface ITourLogService
     {
+        Task<TourLogModel> CreateTourLogAsync(TourLogModel newTourLogModel);
 
+        List<TourLogModel> GetTourLogs();
+
+        TourLogModel GetTourLogById(Guid tourLogModelId);
+
+        Task<TourLogModel> UpdateTourLogAsync(TourLogModel updatedTourLogModel);
+
+        Task DeleteTourLogAsync(Guid tourLogModelId);
     }
 }

@@ -12,9 +12,9 @@ namespace DataAccessLayer.Repository.Interface
     {
         Task<TourLog> CreateTourLogAsync(TourLog newTourLog);
 
-        Task<List<TourLog>> GetTourLogsAsync();
+        List<TourLog> GetTourLogs();
 
-        TourLog? GetTourLogById(Guid tourLogId);
+        TourLog GetTourLogById(Guid tourLogId);
 
         Task<TourLog> UpdateTourLogAsync(TourLog updatedTourLog);
 

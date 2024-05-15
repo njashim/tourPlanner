@@ -27,12 +27,12 @@ namespace DataAccessLayer.Repository
             return newTour;
         }
 
-        public async Task<List<Tour>> GetToursAsync()
+        public List<Tour> GetTours()
         {
-            return await _context.Tours.ToListAsync();
+            return _context.Tours.ToList();
         }
 
-        public Tour? GetTourById(Guid tourId)
+        public Tour GetTourById(Guid tourId)
         {
             return _context.Tours.Find(tourId);
         }
