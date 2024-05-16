@@ -119,6 +119,7 @@
             _tourModel.TransportType = "transport";
             await TourService.CreateTourAsync(_tourModel);
             LoadTourData();
+            ResetTourModel();
         }
     }
 
@@ -139,5 +140,11 @@
     {
         await TourService.DeleteTourAsync(tourModelId);
         LoadTourData();
+    }
+
+    private void ResetTourModel()
+    {
+        _tourModel = new TourModel();
+        StateHasChanged();
     }
 }
