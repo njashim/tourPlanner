@@ -1,15 +1,7 @@
-using AutoMapper;
 using BusinessLayer.Mapping;
 using DataAccessLayer.Entity.Context;
 using DataAccessLayer.Repository.Interface;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
 using BusinessLayer.Service.Interface;
 using BusinessLayer.Service;
 using DataAccessLayer.Repository;
@@ -44,6 +36,10 @@ namespace UILayer
             // Register ITourRepository and ITourService
             builder.Services.AddScoped<ITourRepository, TourRepository>();
             builder.Services.AddScoped<ITourService, TourService>();
+
+            // Register ITourLogRepository and ITourLogService
+            builder.Services.AddScoped<ITourLogRepository, TourLogRepository>();
+            builder.Services.AddScoped<ITourLogService, TourLogService>();
 
             var app = builder.Build();
 
