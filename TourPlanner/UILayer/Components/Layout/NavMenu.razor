@@ -1,12 +1,12 @@
 ﻿<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-<div class="top-row ps-3 navbar navbar-dark d-flex justify-content-center align-items-center" style="height: 100px;">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-            <img src="tourPlannerLogo.png" height="100" alt="logo" />
-        </a>
+<div class="top-row navbar navbar-dark d-flex justify-content-center align-items-center" style="height: 120px;">
+    <div class="d-flex justify-content-center align-items-center" style="width: 100%;">
+        <img src="tourPlannerLogo.png" height="100" alt="logo" />
     </div>
 </div>
+
+
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
@@ -14,7 +14,7 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <i class="fas fa-home"></i>
+                <i class="fas fa-home" style="margin-right:15px"></i>
                 <span aria-hidden="true"></span> Home
             </NavLink>
         </div>
@@ -22,15 +22,16 @@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="tour">
-                <span aria-hidden="true"></span> Tour Planner
+                <span aria-hidden="true"><i class="fas fa-map" style="margin-right:15px"></i></span> Tour Planner
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
-        <NavLink class="nav-link" href="tourlog">
-        <span aria-hidden="true"></span> TourLog Planner
-        </NavLink>
+            <NavLink class="nav-link" href="tourlog">
+                <span aria-hidden="true"><i class="fas fa-book" style="margin-right:15px"></i></span> TourLog Planner
+            </NavLink>
         </div>
+
 
         @*<div class="nav-item px-3">
         <NavLink class="nav-link" href="weather">
