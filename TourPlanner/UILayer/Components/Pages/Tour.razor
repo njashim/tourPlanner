@@ -55,7 +55,7 @@
             </div>
 
             <!-- Submit Button -->
-            <button class="btn btn-primary" @onclick="CreateTour">Submit</button>
+            <button class="btn btn-primary" @onclick="UpdateTour">Submit</button>
             <button type="button" class="btn btn-danger" @onclick="ResetTourModel">Reset</button>
 
             <!-- Search Form -->
@@ -79,8 +79,8 @@
                             <th scope="col">From</th>
                             <th scope="col">To</th>
                             <th scope="col">Transport Type</th>
-                            <th scope="col">Distance</th>
-                            <th scope="col">Estimated Time</th>
+                            @* <th scope="col">Distance</th>
+                            <th scope="col">Estimated Time</th> *@
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -94,8 +94,8 @@
                                 <td class="text-truncate" style="max-width: 75px;">@tourModel.FromLocation</td>
                                 <td class="text-truncate" style="max-width: 75px;">@tourModel.ToLocation</td>
                                 <td class="text-truncate" style="max-width: 75px;">@tourModel.TransportType</td>
-                                <td class="text-truncate" style="max-width: 75px;">@tourModel.Distance</td>
-                                <td class="text-truncate" style="max-width: 75px;">@tourModel.EstimatedTime</td>
+                                @* <td class="text-truncate" style="max-width: 75px;">@tourModel.Distance</td>
+                                <td class="text-truncate" style="max-width: 75px;">@tourModel.EstimatedTime</td> *@
                                 <td>
                                     <div class="btn-group" role="group">
                                         <button class="btn btn-primary btn-sm" @onclick="() => EditTour(tourModel)">
@@ -123,6 +123,30 @@
 </div>
 
 @code {
+    // Variable zum Speichern der ID der ausgewählten Tour
+    private Guid _selectedTourId;
+
+    // Methode zum Laden und Anzeigen der Daten der ausgewählten Tour
+    private void EditTour(TourModel tourModel)
+    {
+        _selectedTourId = tourModel.Id;
+        _tourModel = tourModel;
+    }
+
+    // Methode zum Aktualisieren der ausgewählten Tour
+    private async Task UpdateTour()
+    {
+        if (IsValidForm())
+        {
+            _tourModel.Id = _selectedTourId; // Setze die ID der Tour
+            await TourService.UpdateTourAsync(_tourModel);
+            LoadTourData();
+            ResetTourModel();
+            _selectedTourId = Guid.Empty; // Setze die ID der ausgewählten Tour zurück
+        }
+    }
+
+
     private TourModel _tourModel { get; set; }
     private List<TourModel> _tourModelList { get; set; }
 
@@ -141,7 +165,6 @@
         // Überprüfen, ob das Formular gültig ist
         if (IsValidForm())
         {
-            _tourModel.RouteImagePath = "routeimagePath";
             await TourService.CreateTourAsync(_tourModel);
             LoadTourData();
             ResetTourModel();
@@ -157,13 +180,13 @@
                !string.IsNullOrWhiteSpace(_tourModel.Description);
     }
 
-    private async Task<TourModel> EditTour(TourModel oldTourModel)
-    {
-        var updatedTourModel = await TourService.UpdateTourAsync(oldTourModel);
-        LoadTourData();
+    // private async Task<TourModel> EditTour(TourModel oldTourModel)
+    // {
+    //     var updatedTourModel = await TourService.UpdateTourAsync(oldTourModel);
+    //     LoadTourData();
 
-        return updatedTourModel;
-    }
+    //     return updatedTourModel;
+    // }
 
     private async Task DeleteTour(Guid tourModelId)
     {

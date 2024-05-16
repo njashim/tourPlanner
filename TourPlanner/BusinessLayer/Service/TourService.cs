@@ -41,12 +41,38 @@ namespace BusinessLayer.Service
 
         public async Task<TourModel> UpdateTourAsync(TourModel updatedTourModel)
         {
-            var tour = _mapper.Map<Tour>(updatedTourModel);
-            var updatedTour = await _tourRepository.UpdateTourAsync(tour);
-            var tourModel = _mapper.Map<TourModel>(updatedTour);
+            var existingTour = _tourRepository.GetTourById(updatedTourModel.Id);
 
-            return tourModel;
+            if (existingTour != null)
+            {
+                // Aktualisiere die Eigenschaften der vorhandenen Tour
+                existingTour.FromLocation = updatedTourModel.FromLocation;
+                existingTour.ToLocation = updatedTourModel.ToLocation;
+                existingTour.TransportType = updatedTourModel.TransportType;
+                existingTour.Name = updatedTourModel.Name;
+                existingTour.Description = updatedTourModel.Description;
+
+                // Führe die Aktualisierung im Datenbankkontext durch
+                await _tourRepository.UpdateTourAsync(existingTour);
+
+                // Mappe die aktualisierte Tour zurück zu einem TourModel
+                var updatedTourModelResult = _mapper.Map<TourModel>(existingTour);
+
+                return updatedTourModelResult;
+            }
+            else
+            {
+
+                var tour = _mapper.Map<Tour>(updatedTourModel);
+                tour.RouteImagePath = "test"; // Setze RouteImagePath auf "test"
+                var updatedTour = await _tourRepository.UpdateTourAsync(tour);
+                var tourModel = _mapper.Map<TourModel>(updatedTour);
+
+                return tourModel;
+            }
         }
+
+
 
         public async Task DeleteTourAsync(Guid tourModelId)
         {
