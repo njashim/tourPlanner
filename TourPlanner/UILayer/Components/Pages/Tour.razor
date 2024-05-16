@@ -1,0 +1,114 @@
+﻿@page "/tour"
+@using BusinessLayer.Service.Interface
+@using Model
+@inject ITourService TourService
+@* @rendermode InteractiveAuto *@
+@rendermode InteractiveServer
+
+
+<PageTitle>Create Tour</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="text-center">
+                <h4><b>Your Tour</b></h4>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="from" class="form-label">From:</label>
+                    <input id="from" class="form-control" @bind="_tourModel.FromLocation" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="to" class="form-label">To:</label>
+                    <input id="to" class="form-control" @bind="_tourModel.ToLocation" />
+                </div>
+            </div>
+           @*  <div class="mb-3">
+                <label for="transporttype" class="form-label">Transport Type:</label>
+                <select id="transporttype" name="transporttype" class="form-select" @bind="_tourModel.TransportType">
+                    <option value="car">Car</option>
+                    <option value="bicycle">Bicycle</option>
+                    <option value="byFoot">By foot</option>
+                    <option value="publicTransport">Public transport</option>
+                    <!-- Weitere Optionen hier einfügen -->
+                </select>
+            </div> *@
+            <div class="mb-3">
+                <label for="tourname" class="form-label">Name of Tour:</label>
+                <input id="tourname" class="form-control" @bind="_tourModel.Name" />
+            </div>
+            <div class="mb-3">
+                <label for="tourdescription" class="form-label">Description of Tour:</label>
+                <input id="tourdescription" class="form-control" @bind="_tourModel.Description" style="height:100px" />
+            </div>
+            <button class="btn btn-primary" @onclick="CreateTourAsync">Submit</button>
+            <button type="reset" class="btn btn-danger">Reset</button>
+
+            <form action="#" method="get" class="mb-3" style="margin-top:20px">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Suchen..." name="q">
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">From</th>
+                        <th scope="col">To</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tour in _tourModelList)
+                    {
+                        <tr>
+                            <td>@tour.FromLocation</td>
+                            <td>@tour.ToLocation</td>
+                            <td>@tour.Name</td>
+                            <td>@tour.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-md-6">
+            <div class="text-center">
+                <h4><b>Tour Details</b></h4>
+            </div>
+            <div id="map" style="height: 300px; background-color: lightgray;"></div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private TourModel _tourModel { get; set; }
+    private List<TourModel> _tourModelList { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _tourModel = new TourModel();
+        LoadTourData();
+    }
+
+    private async Task CreateTourAsync()
+    {
+        if (_tourModel != null)
+        {
+            _tourModel.RouteImagePath = "routeimagePath";
+            _tourModel.TransportType = "transport";
+            await TourService.CreateTourAsync(_tourModel);
+        }
+    }
+
+    private void LoadTourData()
+    {
+        _tourModelList = TourService.GetTours();
+    }
+}
