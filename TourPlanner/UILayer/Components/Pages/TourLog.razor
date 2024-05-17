@@ -16,7 +16,7 @@
             <form @ref="formRef">
                 <div class="mb-3">
                     <label for="tour" class="form-label">Tour:</label>
-                    <select id="tour" name="tour" class="form-select" @bind="_selectedTourId" required>
+                    <select id="tour" name="tour" class="form-select" @onchange="OnTourChanged" required>
                         <option value="" disabled selected>Select Tour</option>
                         @foreach (var tourModel in _tourModelList)
                         {
@@ -34,7 +34,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="difficulty" class="form-label">Difficulty:</label>
                         <select id="difficulty" name="difficulty" class="form-select" @bind="_difficulty" required>
-                            <option value="" disabled selected>Tour Difficulty</option>
+                            <option value="" disabled>Tour Difficulty</option>
                             <option value="1">very easy</option>
                             <option value="2">easy</option>
                             <option value="3">okay</option>
@@ -45,7 +45,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="rating" class="form-label">Rating:</label>
                         <select id="rating" name="rating" class="form-select" @bind="_rating" required>
-                            <option value="" disabled selected>Rate Tour</option>
+                            <option value="" disabled>Rate Tour</option>
                             <option value="1">1 (very bad)</option>
                             <option value="2">2 (bad)</option>
                             <option value="3">3 (okay)</option>
@@ -57,15 +57,15 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="totalDistance" class="form-label">Total Distance in m:</label>
+                        <label for="totalDistance" class="form-label">Total Distance:</label>
                         <div class="input-group">
-                            <input type="number" id="totalDistance" name="totalDistance" class="form-control" @bind="_totalDistance" min="0" max="100000" step="1" required>
+                            <input type="text" id="totalDistance" name="totalDistance" class="form-control" value="@_totalDistanceDisplay" readonly>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="totalTime" class="form-label">Total Time in min:</label>
+                        <label for="totalTime" class="form-label">Total Time:</label>
                         <div class="input-group">
-                            <input type="number" id="totalTime" name="totalTime" class="form-control" @bind="_totalTime" min="0" max="100000" step="1" required>
+                            <input type="text" id="totalTime" name="totalTime" class="form-control" value="@_totalTimeDisplay" readonly>
                         </div>
                     </div>
                 </div>
@@ -86,8 +86,8 @@
     private DateTime _datum = DateTime.Today;
     private int _difficulty;
     private int _rating;
-    private double _totalDistance;
-    private int _totalTime;
+    private string _totalDistanceDisplay;
+    private string _totalTimeDisplay;
     private string _comment;
     private List<TourModel> _tourModelList { get; set; }
 
@@ -103,6 +103,25 @@
         _tourModelList = TourService.GetTours();
     }
 
+    private void OnTourChanged(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value.ToString(), out var selectedTourId))
+        {
+            _selectedTourId = selectedTourId;
+            var selectedTour = _tourModelList.FirstOrDefault(t => t.Id == selectedTourId);
+            if (selectedTour != null)
+            {
+                _totalDistanceDisplay = selectedTour.Distance.ToString();
+                _totalTimeDisplay = selectedTour.EstimatedTime.ToString();
+            }
+            else
+            {
+                _totalDistanceDisplay = string.Empty;
+                _totalTimeDisplay = string.Empty;
+            }
+        }
+    }
+
     private void ResetForm()
     {
         // Setze die Werte aller Eingabefelder auf ihre Standardwerte zurück
@@ -110,9 +129,8 @@
         _datum = DateTime.Now;
         _difficulty = 0;
         _rating = 0;
-        _totalDistance = 0;
-        _totalTime = 0;
+        _totalDistanceDisplay = string.Empty;
+        _totalTimeDisplay = string.Empty;
         _comment = string.Empty;
-
     }
 }
