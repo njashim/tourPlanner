@@ -4,6 +4,8 @@
 @inject ITourService TourService
 @inject ITourLogService TourLogService
 @rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+
 
 <PageTitle>TourLog Planner</PageTitle>
 
@@ -17,13 +19,14 @@
             <form @ref="formRef">
                 <div class="mb-3">
                     <label for="tour" class="form-label">Tour:</label>
-                    <select id="tour" name="tour" class="form-select" @onchange="OnTourChanged" required>
-                        <option value="" disabled selected>Select Tour</option>
+                    <select id="tourSelect" name="tour" class="form-select" @onchange="OnTourChanged" required>
+                        <option value="" disabled selected>@(_selectedTourId == Guid.Empty ? "Select Tour" : GetTourName(_selectedTourId))</option>
                         @foreach (var tourModel in _tourModelList)
                         {
                             <option value="@tourModel.Id">@tourModel.Name</option>
                         }
                     </select>
+
                 </div>
 
                 <div class="mb-3">
@@ -89,23 +92,59 @@
                             <th>Difficulty</th>
                             <th>Rating</th>
                             <th>Comment</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var log in _tourLogModelList)
                         {
                             <tr>
-                                <td>@log.TourId</td>
+                                <td>@GetTourName(log.TourId)</td>
                                 <td>@log.DateTime.ToShortDateString()</td>
                                 <td>@log.Difficulty</td>
                                 <td>@log.Rating</td>
                                 <td>@log.Comment</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteTourLog(log.Id)">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                        <button class="btn btn-info btn-sm" @onclick="() => ToggleDetails(log)">
+                                            <i class="fas fa-info-circle"></i>
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
         </div>
+        <div class="col-md-6">
+                <div class="text-center">
+                    <h4><b>TourLog Details</b></h4>
+                </div>
+                <!-- Map Div -->
+                <div id="map" style="height: 300px; background-color: lightgray;"></div>
+                <br />
+                @if (_showDetails)
+                {
+                <div>
+                    <p><strong>Tour:</strong> @GetTourName(_tourLogModel.TourId)</p>
+                    <p><strong>Difficulty:</strong> @_tourLogModel.Difficulty</p>
+                    <p><strong>Rating:</strong> @_tourLogModel.Rating</p>
+                    <p><strong>Distance:</strong> @_tourLogModel.TotalDistance</p>
+                    <p><strong>Time:</strong> @_tourLogModel.TotalTime</p>
+                    <p><strong>Comment:</strong> @_tourLogModel.Comment</p>
+                    <p><strong>Datum:</strong> @_tourLogModel.DateTime</p>
+                </div>
+                }
+        </div>
+
+
     </div>
 </div>
 
@@ -153,6 +192,21 @@
                _difficulty > 0 &&
                _rating > 0;
     }
+    private bool _showDetails = false;
+
+    private void ToggleDetails(TourLogModel tourLog)
+    {
+        if (_tourLogModel != tourLog)
+        {
+            _tourLogModel = tourLog;
+            _showDetails = true;
+        }
+        else
+        {
+            _showDetails = !_showDetails;
+        }
+    }
+
 
     private void LoadTourData()
     {
@@ -183,15 +237,40 @@
         }
     }
 
+    private async Task DeleteTourLog(Guid tourLogModelId)
+    {
+        await TourLogService.DeleteTourLogAsync(tourLogModelId);
+        LoadTourLogs();
+    }
+
     private void ResetForm()
     {
-        // Setze die Werte aller Eingabefelder auf ihre Standardwerte zurück
-        _selectedTourId = Guid.Empty;
+        _selectedTourId = Guid.Empty; // Setze den Wert des Select-Tour-Feldes zurück
         _datum = DateTime.Now;
         _difficulty = 0;
         _rating = 0;
         _totalDistanceDisplay = string.Empty;
         _totalTimeDisplay = string.Empty;
         _comment = string.Empty;
+
+        JSRuntime.InvokeVoidAsync("resetTourSelect");
+    }
+
+
+    private string GetTourName(Guid tourId)
+    {
+        var tour = _tourModelList.FirstOrDefault(t => t.Id == tourId);
+        return tour != null ? tour.Name : " Press icon to see the details";
+    }
+
+    private void ShowTourLogInfo(TourLogModel tourLog)
+    {
+        _tourLogModel = tourLog;
     }
 }
+
+<script>
+    window.resetTourSelect = function () {
+        document.getElementById('tourSelect').selectedIndex = 0;
+    };
+</script>
