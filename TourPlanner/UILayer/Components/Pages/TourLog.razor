@@ -2,6 +2,7 @@
 @using Model
 @using BusinessLayer.Service.Interface
 @inject ITourService TourService
+@inject ITourLogService TourLogService
 @rendermode InteractiveServer
 
 <PageTitle>TourLog Planner</PageTitle>
@@ -74,15 +75,43 @@
                     <label for="comment" class="form-label">Comment:</label>
                     <textarea id="comment" name="comment" class="form-control" @bind="_comment" style="height:10px"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" @onclick="CreateTourLog">Submit</button>
                 <button type="button" class="btn btn-danger" @onclick="ResetForm">Reset</button>
             </form>
+
+            <div class="mt-4">
+                <h5>Tour Logs</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tour</th>
+                            <th>Date</th>
+                            <th>Difficulty</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in _tourLogModelList)
+                        {
+                            <tr>
+                                <td>@log.TourId</td>
+                                <td>@log.DateTime.ToShortDateString()</td>
+                                <td>@log.Difficulty</td>
+                                <td>@log.Rating</td>
+                                <td>@log.Comment</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 @code {
     private Guid _selectedTourId;
+    private TourLogModel _tourLogModel { get; set; } = new TourLogModel();
     private DateTime _datum = DateTime.Today;
     private int _difficulty;
     private int _rating;
@@ -90,17 +119,49 @@
     private string _totalTimeDisplay;
     private string _comment;
     private List<TourModel> _tourModelList { get; set; }
+    private List<TourLogModel> _tourLogModelList { get; set; }
 
     private ElementReference formRef;
 
     protected override void OnInitialized()
     {
         LoadTourData();
+        LoadTourLogs();
+    }
+
+    private async Task CreateTourLog()
+    {
+        // Überprüfen, ob das Formular gültig ist
+        if (IsValidForm())
+        {
+            _tourLogModel.TourId = _selectedTourId;
+            _tourLogModel.DateTime = _datum;
+            _tourLogModel.Difficulty = _difficulty;
+            _tourLogModel.Rating = _rating;
+            _tourLogModel.Comment = _comment;
+
+            await TourLogService.CreateTourLogAsync(_tourLogModel);
+            LoadTourLogs();
+            ResetForm();
+        }
+    }
+
+    private bool IsValidForm()
+    {
+        return _selectedTourId != Guid.Empty &&
+               _datum != default &&
+               _difficulty > 0 &&
+               _rating > 0;
     }
 
     private void LoadTourData()
     {
         _tourModelList = TourService.GetTours();
+    }
+
+    private void LoadTourLogs()
+    {
+        _tourLogModelList = TourLogService.GetTourLogs();
     }
 
     private void OnTourChanged(ChangeEventArgs e)
