@@ -211,8 +211,6 @@
                 tourLogToUpdate.Rating = _rating;
                 tourLogToUpdate.Comment = _comment;
 
-                Console.Write("hallo");
-
                 await TourLogService.UpdateTourLogAsync(tourLogToUpdate);
                 LoadTourLogs();
                 ResetForm();
