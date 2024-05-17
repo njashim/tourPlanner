@@ -51,6 +51,7 @@ namespace BusinessLayer.Service
                 existingTour.TransportType = updatedTourModel.TransportType;
                 existingTour.Name = updatedTourModel.Name;
                 existingTour.Description = updatedTourModel.Description;
+                //Alle Attrivute hinzufuegen evt umaendern auf Repo - Nahi weiß Bescheid
 
                 // Führe die Aktualisierung im Datenbankkontext durch
                 await _tourRepository.UpdateTourAsync(existingTour);

@@ -79,8 +79,6 @@
                             <th scope="col">From</th>
                             <th scope="col">To</th>
                             <th scope="col">Transport Type</th>
-                            @* <th scope="col">Distance</th>
-                            <th scope="col">Estimated Time</th> *@
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -94,8 +92,6 @@
                                 <td class="text-truncate" style="max-width: 75px;">@tourModel.FromLocation</td>
                                 <td class="text-truncate" style="max-width: 75px;">@tourModel.ToLocation</td>
                                 <td class="text-truncate" style="max-width: 75px;">@tourModel.TransportType</td>
-                                @* <td class="text-truncate" style="max-width: 75px;">@tourModel.Distance</td>
-                                <td class="text-truncate" style="max-width: 75px;">@tourModel.EstimatedTime</td> *@
                                 <td>
                                     <div class="btn-group" role="group">
                                         <button class="btn btn-primary btn-sm" @onclick="() => EditTour(tourModel)">
@@ -103,6 +99,9 @@
                                         </button>
                                         <button class="btn btn-danger btn-sm" @onclick="() => DeleteTour(tourModel.Id)">
                                             <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                        <button class="btn btn-info btn-sm" @onclick="() => ShowTourInfo(tourModel)">
+                                            <i class="fas fa-info-circle"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -118,34 +117,44 @@
                 <h4><b>Tour Details</b></h4>
             </div>
             <div id="map" style="height: 300px; background-color: lightgray;"></div>
+            <br />
+            @if (_selectedTour != null)
+            {
+                <div>
+                    <p><strong>Name:</strong> @_selectedTour.Name</p>
+                    <p><strong>Description:</strong> @_selectedTour.Description</p>
+                    <p><strong>From:</strong> @_selectedTour.FromLocation</p>
+                    <p><strong>To:</strong> @_selectedTour.ToLocation</p>
+                    <p><strong>Transport Type:</strong> @_selectedTour.TransportType</p>
+                    <p><strong>Time:</strong> @_selectedTour.EstimatedTime</p>
+                    <p><strong>Distance:</strong> @_selectedTour.Distance</p>
+                </div>
+            }
         </div>
     </div>
 </div>
 
 @code {
-    // Variable zum Speichern der ID der ausgewählten Tour
     private Guid _selectedTourId;
+    private TourModel _selectedTour;
 
-    // Methode zum Laden und Anzeigen der Daten der ausgewählten Tour
     private void EditTour(TourModel tourModel)
     {
         _selectedTourId = tourModel.Id;
         _tourModel = tourModel;
     }
 
-    // Methode zum Aktualisieren der ausgewählten Tour
     private async Task UpdateTour()
     {
         if (IsValidForm())
         {
-            _tourModel.Id = _selectedTourId; // Setze die ID der Tour
+            _tourModel.Id = _selectedTourId;
             await TourService.UpdateTourAsync(_tourModel);
             LoadTourData();
             ResetTourModel();
-            _selectedTourId = Guid.Empty; // Setze die ID der ausgewählten Tour zurück
+            _selectedTourId = Guid.Empty;
         }
     }
-
 
     private TourModel _tourModel { get; set; }
     private List<TourModel> _tourModelList { get; set; }
@@ -155,6 +164,7 @@
         _tourModel = new TourModel();
         LoadTourData();
     }
+
     private void LoadTourData()
     {
         _tourModelList = TourService.GetTours();
@@ -162,7 +172,6 @@
 
     private async Task CreateTour()
     {
-        // Überprüfen, ob das Formular gültig ist
         if (IsValidForm())
         {
             await TourService.CreateTourAsync(_tourModel);
@@ -176,17 +185,8 @@
         return _tourModel != null && !string.IsNullOrWhiteSpace(_tourModel.FromLocation) &&
                !string.IsNullOrWhiteSpace(_tourModel.ToLocation) &&
                !string.IsNullOrWhiteSpace(_tourModel.TransportType) &&
-               !string.IsNullOrWhiteSpace(_tourModel.Name) &&
-               !string.IsNullOrWhiteSpace(_tourModel.Description);
+               !string.IsNullOrWhiteSpace(_tourModel.Name);
     }
-
-    // private async Task<TourModel> EditTour(TourModel oldTourModel)
-    // {
-    //     var updatedTourModel = await TourService.UpdateTourAsync(oldTourModel);
-    //     LoadTourData();
-
-    //     return updatedTourModel;
-    // }
 
     private async Task DeleteTour(Guid tourModelId)
     {
@@ -197,6 +197,12 @@
     private void ResetTourModel()
     {
         _tourModel = new TourModel();
+        StateHasChanged();
+    }
+
+    private void ShowTourInfo(TourModel tourModel)
+    {
+        _selectedTour = tourModel;
         StateHasChanged();
     }
 }
