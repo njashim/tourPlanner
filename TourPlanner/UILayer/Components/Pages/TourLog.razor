@@ -6,7 +6,6 @@
 @rendermode InteractiveServer
 @inject IJSRuntime JSRuntime
 
-
 <PageTitle>TourLog Planner</PageTitle>
 
 <div class="container">
@@ -15,18 +14,20 @@
             <div class="text-center">
                 <h4><b>Your Tour Log</b></h4>
             </div>
-            <!-- Rest des Formulars -->
+            <!-- Form Section -->
             <form @ref="formRef">
+                <input type="hidden" @bind="_isEditing" />
+                <input type="hidden" @bind="_tourLogModel.Id" />
+
                 <div class="mb-3">
                     <label for="tour" class="form-label">Tour:</label>
                     <select id="tourSelect" name="tour" class="form-select" @onchange="OnTourChanged" required>
                         <option value="" disabled selected>@(_selectedTourId == Guid.Empty ? "Select Tour" : GetTourName(_selectedTourId))</option>
                         @foreach (var tourModel in _tourModelList)
                         {
-                            <option value="@tourModel.Id">@tourModel.Name</option>
+                            <option value="@tourModel.Id" selected="@(_selectedTourId == tourModel.Id)">@tourModel.Name</option>
                         }
                     </select>
-
                 </div>
 
                 <div class="mb-3">
@@ -63,13 +64,13 @@
                     <div class="col-md-6 mb-3">
                         <label for="totalDistance" class="form-label">Total Distance:</label>
                         <div class="input-group">
-                            <input type="text" id="totalDistance" name="totalDistance" class="form-control" value="@_totalDistanceDisplay" readonly>
+                            <input type="text" id="totalDistance" name="totalDistance" class="form-control" value="@(_totalDistanceDisplay)" readonly>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="totalTime" class="form-label">Total Time:</label>
                         <div class="input-group">
-                            <input type="text" id="totalTime" name="totalTime" class="form-control" value="@_totalTimeDisplay" readonly>
+                            <input type="text" id="totalTime" name="totalTime" class="form-control" value="@(_totalTimeDisplay)" readonly>
                         </div>
                     </div>
                 </div>
@@ -78,7 +79,7 @@
                     <label for="comment" class="form-label">Comment:</label>
                     <textarea id="comment" name="comment" class="form-control" @bind="_comment" style="height:10px"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary" @onclick="CreateTourLog">Submit</button>
+                <button type="submit" class="btn btn-primary" @onclick="HandleFormSubmit">Submit</button>
                 <button type="button" class="btn btn-danger" @onclick="ResetForm">Reset</button>
             </form>
 
@@ -106,7 +107,7 @@
                                 <td>@log.Comment</td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <button class="btn btn-primary btn-sm">
+                                        <button class="btn btn-primary btn-sm" @onclick="() => EditTourLog(log)">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button class="btn btn-danger btn-sm" @onclick="() => DeleteTourLog(log.Id)">
@@ -124,14 +125,14 @@
             </div>
         </div>
         <div class="col-md-6">
-                <div class="text-center">
-                    <h4><b>TourLog Details</b></h4>
-                </div>
-                <!-- Map Div -->
-                <div id="map" style="height: 300px; background-color: lightgray;"></div>
-                <br />
-                @if (_showDetails)
-                {
+            <div class="text-center">
+                <h4><b>TourLog Details</b></h4>
+            </div>
+            <!-- Map Div -->
+            <div id="map" style="height: 300px; background-color: lightgray;"></div>
+            <br />
+            @if (_showDetails)
+            {
                 <div>
                     <p><strong>Tour:</strong> @GetTourName(_tourLogModel.TourId)</p>
                     <p><strong>Difficulty:</strong> @_tourLogModel.Difficulty</p>
@@ -141,10 +142,8 @@
                     <p><strong>Comment:</strong> @_tourLogModel.Comment</p>
                     <p><strong>Datum:</strong> @_tourLogModel.DateTime</p>
                 </div>
-                }
+            }
         </div>
-
-
     </div>
 </div>
 
@@ -154,9 +153,10 @@
     private DateTime _datum = DateTime.Today;
     private int _difficulty;
     private int _rating;
-    private string _totalDistanceDisplay;
-    private string _totalTimeDisplay;
+    private double _totalDistanceDisplay;
+    private TimeSpan _totalTimeDisplay;
     private string _comment;
+    private bool _isEditing = false;
     private List<TourModel> _tourModelList { get; set; }
     private List<TourLogModel> _tourLogModelList { get; set; }
 
@@ -168,9 +168,20 @@
         LoadTourLogs();
     }
 
+    private async Task HandleFormSubmit()
+    {
+        if (_isEditing)
+        {
+            await UpdateTourLog();
+        }
+        else
+        {
+            await CreateTourLog();
+        }
+    }
+
     private async Task CreateTourLog()
     {
-        // Überprüfen, ob das Formular gültig ist
         if (IsValidForm())
         {
             _tourLogModel.TourId = _selectedTourId;
@@ -178,10 +189,51 @@
             _tourLogModel.Difficulty = _difficulty;
             _tourLogModel.Rating = _rating;
             _tourLogModel.Comment = _comment;
+            _tourLogModel.TotalDistance = _totalDistanceDisplay;
+            _tourLogModel.TotalTime = _totalTimeDisplay;
 
             await TourLogService.CreateTourLogAsync(_tourLogModel);
             LoadTourLogs();
             ResetForm();
+        }
+    }
+
+    private async Task UpdateTourLog()
+    {
+        if (IsValidForm())
+        {
+            var tourLogToUpdate = _tourLogModelList.FirstOrDefault(t => t.Id == _tourLogModel.Id);
+            if (tourLogToUpdate != null)
+            {
+                tourLogToUpdate.TourId = _selectedTourId;
+                tourLogToUpdate.DateTime = _datum;
+                tourLogToUpdate.Difficulty = _difficulty;
+                tourLogToUpdate.Rating = _rating;
+                tourLogToUpdate.Comment = _comment;
+
+                Console.Write("hallo");
+
+                await TourLogService.UpdateTourLogAsync(tourLogToUpdate);
+                LoadTourLogs();
+                ResetForm();
+            }
+        }
+    }
+
+    private void EditTourLog(TourLogModel log)
+    {
+        _isEditing = true;
+        _tourLogModel = log;
+        _selectedTourId = log.TourId;
+        _datum = log.DateTime;
+        _difficulty = log.Difficulty;
+        _rating = log.Rating;
+        _comment = log.Comment;
+        var selectedTour = _tourModelList.FirstOrDefault(t => t.Id == log.TourId);
+        if (selectedTour != null)
+        {
+            _totalDistanceDisplay = selectedTour.Distance;
+            _totalTimeDisplay = selectedTour.EstimatedTime;
         }
     }
 
@@ -192,6 +244,7 @@
                _difficulty > 0 &&
                _rating > 0;
     }
+
     private bool _showDetails = false;
 
     private void ToggleDetails(TourLogModel tourLog)
@@ -206,7 +259,6 @@
             _showDetails = !_showDetails;
         }
     }
-
 
     private void LoadTourData()
     {
@@ -226,13 +278,13 @@
             var selectedTour = _tourModelList.FirstOrDefault(t => t.Id == selectedTourId);
             if (selectedTour != null)
             {
-                _totalDistanceDisplay = selectedTour.Distance.ToString();
-                _totalTimeDisplay = selectedTour.EstimatedTime.ToString();
+                _totalDistanceDisplay = selectedTour.Distance;
+                _totalTimeDisplay = selectedTour.EstimatedTime;
             }
             else
             {
-                _totalDistanceDisplay = string.Empty;
-                _totalTimeDisplay = string.Empty;
+                _totalDistanceDisplay = 0.0;
+                _totalTimeDisplay = TimeSpan.Zero;
             }
         }
     }
@@ -245,17 +297,17 @@
 
     private void ResetForm()
     {
-        _selectedTourId = Guid.Empty; // Setze den Wert des Select-Tour-Feldes zurück
+        _selectedTourId = Guid.Empty;
         _datum = DateTime.Now;
         _difficulty = 0;
         _rating = 0;
-        _totalDistanceDisplay = string.Empty;
-        _totalTimeDisplay = string.Empty;
+        _totalDistanceDisplay = 0;
+        _totalTimeDisplay = TimeSpan.Zero;
         _comment = string.Empty;
+        _isEditing = false;
 
         JSRuntime.InvokeVoidAsync("resetTourSelect");
     }
-
 
     private string GetTourName(Guid tourId)
     {
