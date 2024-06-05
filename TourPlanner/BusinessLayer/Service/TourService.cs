@@ -45,7 +45,6 @@ namespace BusinessLayer.Service
 
             if (existingTour != null)
             {
-                // Aktualisiere die Eigenschaften der vorhandenen Tour
                 existingTour.FromLocation = updatedTourModel.FromLocation;
                 existingTour.ToLocation = updatedTourModel.ToLocation;
                 existingTour.TransportType = updatedTourModel.TransportType;
@@ -53,10 +52,8 @@ namespace BusinessLayer.Service
                 existingTour.Description = updatedTourModel.Description;
                 //Alle Attrivute hinzufuegen evt umaendern auf Repo - Nahi weiß Bescheid
 
-                // Führe die Aktualisierung im Datenbankkontext durch
                 await _tourRepository.UpdateTourAsync(existingTour);
 
-                // Mappe die aktualisierte Tour zurück zu einem TourModel
                 var updatedTourModelResult = _mapper.Map<TourModel>(existingTour);
 
                 return updatedTourModelResult;
