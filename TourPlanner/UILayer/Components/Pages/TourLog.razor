@@ -18,7 +18,7 @@
             <form @ref="formRef">
                 <div class="mb-3">
                     <label for="tour" class="form-label">Tour:</label>
-                    <select id="tourSelect" name="tour" class="form-select" @onchange="OnTourChanged" required>
+                    <select id="tourSelect" name="tour" class="form-select" @onchange="OnTourChanged">
                         <option value="" disabled selected>@(_selectedTourId == Guid.Empty ? "Select Tour" : GetTourName(_selectedTourId))</option>
                         @foreach (var tourModel in _tourModelList)
                         {
