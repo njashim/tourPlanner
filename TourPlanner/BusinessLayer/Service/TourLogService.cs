@@ -51,6 +51,7 @@ namespace BusinessLayer.Service
             return tourLogModel;
         }
 
+
         public async Task DeleteTourLogAsync(Guid tourLogModelId)
         {
             await _tourLogRepository.DeleteTourLogAsync(tourLogModelId);

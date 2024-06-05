@@ -6,7 +6,6 @@
 @rendermode InteractiveServer
 @inject IJSRuntime JSRuntime
 
-
 <PageTitle>TourLog Planner</PageTitle>
 
 <div class="container">
@@ -19,14 +18,13 @@
             <form @ref="formRef">
                 <div class="mb-3">
                     <label for="tour" class="form-label">Tour:</label>
-                    <select id="tourSelect" name="tour" class="form-select" @onchange="OnTourChanged" required>
+                    <select id="tourSelect" name="tour" class="form-select" @onchange="OnTourChanged">
                         <option value="" disabled selected>@(_selectedTourId == Guid.Empty ? "Select Tour" : GetTourName(_selectedTourId))</option>
                         @foreach (var tourModel in _tourModelList)
                         {
                             <option value="@tourModel.Id">@tourModel.Name</option>
                         }
                     </select>
-
                 </div>
 
                 <div class="mb-3">
@@ -78,7 +76,7 @@
                     <label for="comment" class="form-label">Comment:</label>
                     <textarea id="comment" name="comment" class="form-control" @bind="_comment" style="height:10px"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary" @onclick="CreateTourLog">Submit</button>
+                <button type="submit" class="btn btn-primary" @onclick="CreateOrUpdateTourLog">Submit</button>
                 <button type="button" class="btn btn-danger" @onclick="ResetForm">Reset</button>
             </form>
 
@@ -99,14 +97,14 @@
                         @foreach (var log in _tourLogModelList)
                         {
                             <tr>
-                                <td>@GetTourName(log.TourId)</td>
-                                <td>@log.DateTime.ToShortDateString()</td>
-                                <td>@log.Difficulty</td>
-                                <td>@log.Rating</td>
-                                <td>@log.Comment</td>
+                                <td class="text-truncate" style="max-width: 75px;">@GetTourName(log.TourId)</td>
+                                <td class="text-truncate" style="max-width: 75px;">@log.DateTime.ToShortDateString()</td>
+                                <td class="text-truncate" style="max-width: 75px;">@log.Difficulty</td>
+                                <td class="text-truncate" style="max-width: 75px;">@log.Rating</td>
+                                <td class="text-truncate" style="max-width: 75px;">@log.Comment</td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <button class="btn btn-primary btn-sm">
+                                        <button class="btn btn-primary btn-sm" @onclick="() => EditTourLog(log)">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button class="btn btn-danger btn-sm" @onclick="() => DeleteTourLog(log.Id)">
@@ -159,6 +157,7 @@
     private string _comment;
     private List<TourModel> _tourModelList { get; set; }
     private List<TourLogModel> _tourLogModelList { get; set; }
+    private Guid _editingTourLogId = Guid.Empty;
 
     private ElementReference formRef;
 
@@ -168,9 +167,8 @@
         LoadTourLogs();
     }
 
-    private async Task CreateTourLog()
+    private async Task CreateOrUpdateTourLog()
     {
-        // Überprüfen, ob das Formular gültig ist
         if (IsValidForm())
         {
             _tourLogModel.TourId = _selectedTourId;
@@ -179,7 +177,19 @@
             _tourLogModel.Rating = _rating;
             _tourLogModel.Comment = _comment;
 
-            await TourLogService.CreateTourLogAsync(_tourLogModel);
+            if (_editingTourLogId == Guid.Empty)
+            {
+                // Create new TourLog
+                await TourLogService.CreateTourLogAsync(_tourLogModel);
+            }
+            else
+            {
+                // Update existing TourLog
+                _tourLogModel.Id = _editingTourLogId;
+                await TourLogService.UpdateTourLogAsync(_tourLogModel);
+                _editingTourLogId = Guid.Empty;
+            }
+
             LoadTourLogs();
             ResetForm();
         }
@@ -192,6 +202,7 @@
                _difficulty > 0 &&
                _rating > 0;
     }
+
     private bool _showDetails = false;
 
     private void ToggleDetails(TourLogModel tourLog)
@@ -206,7 +217,6 @@
             _showDetails = !_showDetails;
         }
     }
-
 
     private void LoadTourData()
     {
@@ -245,17 +255,17 @@
 
     private void ResetForm()
     {
-        _selectedTourId = Guid.Empty; // Setze den Wert des Select-Tour-Feldes zurück
+        _selectedTourId = Guid.Empty;
         _datum = DateTime.Now;
         _difficulty = 0;
         _rating = 0;
         _totalDistanceDisplay = string.Empty;
         _totalTimeDisplay = string.Empty;
         _comment = string.Empty;
+        _editingTourLogId = Guid.Empty;
 
         JSRuntime.InvokeVoidAsync("resetTourSelect");
     }
-
 
     private string GetTourName(Guid tourId)
     {
@@ -266,6 +276,23 @@
     private void ShowTourLogInfo(TourLogModel tourLog)
     {
         _tourLogModel = tourLog;
+    }
+
+    private void EditTourLog(TourLogModel tourLog)
+    {
+        _editingTourLogId = tourLog.Id;
+        _selectedTourId = tourLog.TourId;
+        _datum = tourLog.DateTime;
+        _difficulty = tourLog.Difficulty;
+        _rating = tourLog.Rating;
+        _comment = tourLog.Comment;
+
+        var selectedTour = _tourModelList.FirstOrDefault(t => t.Id == _selectedTourId);
+        if (selectedTour != null)
+        {
+            _totalDistanceDisplay = selectedTour.Distance.ToString();
+            _totalTimeDisplay = selectedTour.EstimatedTime.ToString();
+        }
     }
 }
 

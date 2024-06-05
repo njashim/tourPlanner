@@ -39,11 +39,15 @@ namespace DataAccessLayer.Repository
 
         public async Task<TourLog> UpdateTourLogAsync(TourLog updatedTourLog)
         {
-            _context.TourLogs.Update(updatedTourLog);
-            await _context.SaveChangesAsync();
-
-            return updatedTourLog;
+            var existingTourLog = await _context.TourLogs.FindAsync(updatedTourLog.Id);
+            if (existingTourLog != null)
+            {
+                _context.Entry(existingTourLog).CurrentValues.SetValues(updatedTourLog);
+                await _context.SaveChangesAsync();
+            }
+            return existingTourLog;
         }
+
 
         public async Task DeleteTourLogAsync(Guid tourLogId)
         {
