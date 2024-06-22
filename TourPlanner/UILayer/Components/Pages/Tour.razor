@@ -59,14 +59,14 @@
             <button type="button" class="btn btn-danger" @onclick="ResetTourModel">Reset</button>
 
             <!-- Search Form -->
-            <form action="#" method="get" class="mb-3" style="margin-top:20px">
+            <div class="mb-3" style="margin-top:20px">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." name="q">
-                    <button type="submit" class="btn btn-primary">
+                    <input type="text" class="form-control" placeholder="Search..." @bind="searchQuery" @oninput="SearchTours" />
+                    <button type="button" class="btn btn-primary" @onclick="SearchTours">
                         Search
                     </button>
                 </div>
-            </form>
+            </div>
 
             <!-- Tour Table -->
             <div class="table-responsive" style="max-width: 100%;">
@@ -84,7 +84,7 @@
                     </thead>
                     <!-- Table Body -->
                     <tbody>
-                        @foreach (var tourModel in _tourModelList)
+                        @foreach (var tourModel in filteredTourModelList)
                         {
                             <tr>
                                 <td class="text-truncate" style="max-width: 75px;">@tourModel.Name</td>
@@ -137,6 +137,7 @@
 @code {
     private Guid _selectedTourId;
     private TourModel _selectedTour;
+    private string searchQuery = string.Empty;
 
     private void EditTour(TourModel tourModel)
     {
@@ -158,6 +159,13 @@
 
     private TourModel _tourModel { get; set; }
     private List<TourModel> _tourModelList { get; set; }
+    private List<TourModel> filteredTourModelList => string.IsNullOrWhiteSpace(searchQuery)
+        ? _tourModelList
+        : _tourModelList.Where(t => t.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+                                 || t.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+                                 || t.FromLocation.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+                                 || t.ToLocation.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+                                 || t.TransportType.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
 
     protected override void OnInitialized()
     {
@@ -203,6 +211,11 @@
     private void ShowTourInfo(TourModel tourModel)
     {
         _selectedTour = tourModel;
+        StateHasChanged();
+    }
+
+    private void SearchTours()
+    {
         StateHasChanged();
     }
 }

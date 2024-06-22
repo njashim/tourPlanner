@@ -1,0 +1,174 @@
+﻿@page "/carrental"
+
+@using System.Globalization
+
+<PageTitle>Car Rental</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3 class="text-center">Select Car</h3>
+
+            <div class="mb-3">
+                <label for="carSelect" class="form-label">Select Car:</label>
+                <select id="carSelect" class="form-select" @onchange="UpdateSelectedCar">
+                    <option value="">Select a car...</option>
+                    @foreach (var car in Cars)
+                    {
+                        <option value="@car.Id">@car.Name</option>
+                    }
+                </select>
+            </div>
+
+            @if (!string.IsNullOrEmpty(SelectedCarImage))
+            {
+                <div class="text-center mb-3">
+                    <img src="@SelectedCarImage" alt="Selected Car" class="img-fluid" style="max-height: 300px;" />
+                </div>
+            }
+        </div>
+
+        <div class="col-md-8">
+            @if (SelectedCarId != Guid.Empty)
+            {
+                <h3 class="text-center">Car Rental</h3>
+
+                <div class="mb-3">
+                    <label for="fromDate" class="form-label">From Date:</label>
+                    <input id="fromDate" type="date" class="form-control" @bind="FromDate" required>
+                </div>
+                <div class="mb-3">
+                    <label for="toDate" class="form-label">To Date:</label>
+                    <input id="toDate" type="date" class="form-control" @bind="ToDate" required>
+                </div>
+                <div class="alert alert-info" role="alert" style="margin-top: 20px;">
+                    <h4 class="alert-heading">Your Offer:</h4>
+                    <p>Total Days: @TotalDays</p>
+                    <p>Daily Rate: @DailyRate.ToString("C", CultureInfo.GetCultureInfo("de-DE"))</p>
+                    <hr>
+                    <h5>Total Cost: @TotalCost.ToString("C", CultureInfo.GetCultureInfo("de-DE"))</h5>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateTime fromDate = DateTime.Today;
+    private DateTime toDate = DateTime.Today.AddDays(7);
+    private int totalDays = 0;
+    private decimal totalCost = 0;
+    private Guid selectedCarId = Guid.Empty;
+
+    private DateTime FromDate
+    {
+        get => fromDate;
+        set
+        {
+            fromDate = value;
+            CalculateOffer();
+        }
+    }
+
+    private DateTime ToDate
+    {
+        get => toDate;
+        set
+        {
+            toDate = value;
+            CalculateOffer();
+        }
+    }
+
+    private int TotalDays
+    {
+        get => totalDays;
+        set => totalDays = value;
+    }
+
+    private decimal TotalCost
+    {
+        get => totalCost;
+        set => totalCost = value;
+    }
+
+    private Guid SelectedCarId
+    {
+        get => selectedCarId;
+        set
+        {
+            selectedCarId = value;
+            if (selectedCarId != Guid.Empty)
+            {
+                UpdateSelectedCarImage();
+                UpdateDailyRate();
+                CalculateOffer();
+            }
+            else
+            {
+                SelectedCarImage = null; // Reset image when no car is selected
+            }
+        }
+    }
+
+    private List<Car> Cars { get; set; } = new List<Car>
+    {
+        new Car { Id = Guid.NewGuid(), Name = "BMW 3 Series", ImageUrl = "g20.jpg", DailyRate = 70m },
+        new Car { Id = Guid.NewGuid(), Name = "BMW 7 Series", ImageUrl = "7.jpg", DailyRate = 100m },
+        new Car { Id = Guid.NewGuid(), Name = "BMW 5 Series (M)", ImageUrl = "f90.png", DailyRate = 200m }
+    };
+
+    private string SelectedCarImage { get; set; } = null;
+    private decimal DailyRate { get; set; } = 0;
+
+    private void CalculateOffer()
+    {
+        if (fromDate != default && toDate != default && toDate >= fromDate)
+        {
+            totalDays = (toDate - fromDate).Days + 1; // Include both start and end dates
+            TotalCost = totalDays * DailyRate;
+        }
+        else
+        {
+            totalDays = 0;
+            TotalCost = 0;
+        }
+    }
+
+    private void UpdateSelectedCarImage()
+    {
+        var selectedCar = Cars.FirstOrDefault(car => car.Id == selectedCarId);
+        SelectedCarImage = selectedCar?.ImageUrl ?? null;
+    }
+
+    private void UpdateDailyRate()
+    {
+        DailyRate = Cars.FirstOrDefault(car => car.Id == selectedCarId)?.DailyRate ?? 0;
+    }
+
+    private void UpdateSelectedCar(ChangeEventArgs args)
+    {
+        if (Guid.TryParse(args.Value.ToString(), out Guid result))
+        {
+            selectedCarId = result;
+            if (selectedCarId != Guid.Empty)
+            {
+                UpdateSelectedCarImage();
+                UpdateDailyRate();
+                CalculateOffer();
+            }
+            else
+            {
+                SelectedCarImage = null; // Reset image when no car is selected
+            }
+        }
+    }
+
+    private class Car
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+        public decimal DailyRate { get; set; }
+    }
+}

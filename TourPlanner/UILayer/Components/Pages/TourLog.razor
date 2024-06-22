@@ -80,6 +80,16 @@
                 <button type="button" class="btn btn-danger" @onclick="ResetForm">Reset</button>
             </form>
 
+            <!-- Search Form -->
+            <div class="mb-3" style="margin-top:20px">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search..." @bind="searchQuery" @oninput="SearchTourLogs" />
+                    <button type="button" class="btn btn-primary" @onclick="SearchTourLogs">
+                        Search
+                    </button>
+                </div>
+            </div>
+
             <div class="mt-4">
                 <h5>Tour Logs</h5>
                 <table class="table">
@@ -94,7 +104,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var log in _tourLogModelList)
+                        @foreach (var log in filteredTourLogModelList)
                         {
                             <tr>
                                 <td class="text-truncate" style="max-width: 75px;">@GetTourName(log.TourId)</td>
@@ -160,6 +170,7 @@
     private Guid _editingTourLogId = Guid.Empty;
 
     private ElementReference formRef;
+    private string searchQuery = string.Empty;
 
     protected override void OnInitialized()
     {
@@ -292,6 +303,29 @@
         {
             _totalDistanceDisplay = selectedTour.Distance.ToString();
             _totalTimeDisplay = selectedTour.EstimatedTime.ToString();
+        }
+    }
+
+    private void SearchTourLogs()
+    {
+        StateHasChanged();
+    }
+
+    private IEnumerable<TourLogModel> filteredTourLogModelList
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery))
+            {
+                return _tourLogModelList;
+            }
+            return _tourLogModelList.Where(log =>
+                GetTourName(log.TourId).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                log.DateTime.ToShortDateString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                log.Difficulty.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                log.Rating.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                log.Comment.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+            );
         }
     }
 }
