@@ -13,5 +13,6 @@ namespace BusinessLayer.Service.Interface
         Task<TourModel> UpdateTourAsync(TourModel updatedTourModel);
 
         Task DeleteTourAsync(Guid tourModelId);
+
     }
 }

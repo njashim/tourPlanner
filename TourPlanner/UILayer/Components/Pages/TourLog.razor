@@ -7,6 +7,8 @@
 @inject IJSRuntime JSRuntime
 
 <PageTitle>TourLog Planner</PageTitle>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <div class="container">
     <div class="row">
@@ -136,7 +138,7 @@
                 <h4><b>TourLog Details</b></h4>
             </div>
             <!-- Map Div -->
-            <div id="map" style="height: 300px; background-color: lightgray;"></div>
+            <div id="map" style="height: 400px; width: 100%;"></div> <!-- Added height and width -->
             <br />
             @if (_showDetails)
             {
@@ -168,6 +170,7 @@
     private List<TourModel> _tourModelList { get; set; }
     private List<TourLogModel> _tourLogModelList { get; set; }
     private Guid _editingTourLogId = Guid.Empty;
+    private object directions; // Add this line to define the directions variable
 
     private ElementReference formRef;
     private string searchQuery = string.Empty;
@@ -328,9 +331,63 @@
             );
         }
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize the map after the first render
+            directions = new { bbox = new double[] { 16.3725, 48.2082, 16.3735, 48.2092 } }; // Example bounding box
+            await JSRuntime.InvokeVoidAsync("initializeMap", "map", directions);
+        }
+    }
 }
 
 <script>
+    window.initializeMap = async (mapId, directions) => {
+        // Funktion zum Laden von Leaflet.js-Skript
+        const loadLeaflet = () => {
+            return new Promise((resolve, reject) => {
+                if (window.L) {
+                    resolve();
+                } else {
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                }
+            });
+        };
+
+        // Warte auf das Laden von Leaflet.js
+        try {
+            await loadLeaflet();
+        } catch (error) {
+            console.error('Fehler beim Laden von Leaflet.js:', error);
+            return;
+        }
+
+        // Leaflet.js ist nun geladen, Karteninitialisierung fortsetzen
+        var map = L.map(mapId);
+        var bbox = directions.bbox;
+
+        map.fitBounds([[bbox[1], bbox[0]], [bbox[3], bbox[2]]]);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '2024 © FH Technikum Wien'
+        }).addTo(map);
+
+        // Füge GeoJSON-Layer zur Karte hinzu
+        try {
+            console.log('GeoJSON-Objekt:', directions); // Logge das GeoJSON-Objekt zur Fehlerbehebung
+            L.geoJSON(directions).addTo(map);
+        } catch (error) {
+            console.error('Fehler beim Hinzufügen von GeoJSON zur Karte:', error);
+        }
+    };
+
+
     window.resetTourSelect = function () {
         document.getElementById('tourSelect').selectedIndex = 0;
     };

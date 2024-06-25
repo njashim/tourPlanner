@@ -330,5 +330,17 @@ namespace BusinessLayer.Tests.Mapping
                 Assert.That(tourLogs[i].Rating, Is.EqualTo(tourLogModels[i].Rating));
             }
         }
+
+        [Test]
+        public void Should_Map_Empty_ListOfTourLogModel_To_Empty_ListOfTourLog()
+        {
+            var tourLogModels = new List<TourLogModel>();
+
+            var tourLogs = _mapper.Map<List<TourLog>>(tourLogModels);
+
+            Assert.That(tourLogs, Is.Not.Null); 
+            Assert.That(tourLogs.Count, Is.EqualTo(0)); 
+        }
+
     }
 }
