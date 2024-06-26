@@ -42,6 +42,8 @@ The Data Access Layer is responsible for interacting with the PostgreSQL databas
 
 The Model Layer defines the data structures used throughout the application. It includes classes representing the entities (e.g., Tour, TourLog) and their properties. The model is used by both the BL and DAL to ensure consistency in the data being processed and stored. This layer ensures that data integrity is maintained and that the application can evolve without breaking existing functionality.
 
+#### use cases (is missing completely)
+
 #### UX (Wireframe)
 
 <img src="img\TourWireframe.png" alt="TourWireframe" style="zoom:80%;" />
