@@ -5,6 +5,43 @@ GitHub-Repository: https://github.com/njashim/tourPlanner
 
 
 
+#### app architecture (class diagrams are missing)
+
+Our Tour Planner application is designed to manage various tours and their associated logs. It uses a multi-layered architecture consisting of the following layers: UI Layer, Business Layer (BL), Data Access Layer (DAL), and Model Layer.
+
+**UI Layer**
+
+The UI Layer is responsible for the application's user interface, which is implemented with Blazor. This layer follows the MVVM (Model-View-ViewModel) pattern to separate the UI logic from the business logic, providing a clean and maintainable structure. The UI Layer includes the following functionalities:
+
+- Displaying and managing a list of tours.
+- Creating, modifying, and deleting tours.
+- Creating, modifying, and deleting tour logs.
+- Viewing detailed information about each tour and its associated logs.
+- Generating reports (tour reports and summary reports).
+- Performing full-text searches on tour and tour-log data.
+
+**Business Layer**
+
+The Business Layer contains the core logic of the application. It acts as an intermediary between the UI Layer and the Data Access Layer. This layer processes data, applies business rules, and ensures that the data is correctly managed before being sent to the UI or DAL. Key responsibilities of the BL include:
+
+- Handling CRUD operations for tours and tour logs.
+- Computing derived attributes such as tour popularity and child-friendliness.
+- Interfacing with external services to retrieve tour-related data (e.g., distance and time using OpenRouteservice API).
+- Managing the business rules and validations for user inputs.
+
+**Data Access Layer**
+
+The Data Access Layer is responsible for interacting with the PostgreSQL database and managing data persistence. This layer uses Entity Framework Core as an Object-Relational Mapper (ORM) to map objects in the application to database records, facilitating easy data manipulation. The DAL performs the following functions:
+
+- Storing and retrieving tour and tour-log data.
+- Managing database connections and transactions.
+- Storing images related to tours externally in the filesystem.
+- Ensuring that data operations are performed efficiently and reliably.
+
+**Model Layer**
+
+The Model Layer defines the data structures used throughout the application. It includes classes representing the entities (e.g., Tour, TourLog) and their properties. The model is used by both the BL and DAL to ensure consistency in the data being processed and stored. This layer ensures that data integrity is maintained and that the application can evolve without breaking existing functionality.
+
 #### UX (Wireframe)
 
 <img src="img\TourWireframe.png" alt="TourWireframe" style="zoom:80%;" />
