@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using DataAccessLayer.Entity;
+using Model;
 
 namespace BusinessLayer.Service.Interface
 {
@@ -13,6 +14,7 @@ namespace BusinessLayer.Service.Interface
         Task<TourModel> UpdateTourAsync(TourModel updatedTourModel);
 
         Task DeleteTourAsync(Guid tourModelId);
+
 
     }
 }

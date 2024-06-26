@@ -19,5 +19,6 @@ namespace DataAccessLayer.Repository.Interface
         Task<Tour> UpdateTourAsync(Tour updatedTour);
 
         Task DeleteTourAsync(Guid tourId);
+
     }
 }

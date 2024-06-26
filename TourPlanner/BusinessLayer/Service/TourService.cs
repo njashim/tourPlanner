@@ -2,6 +2,8 @@
 using BusinessLayer.Service.Interface;
 using DataAccessLayer.Entity;
 using DataAccessLayer.Repository.Interface;
+using iText.Commons.Actions.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Model;
 
 namespace BusinessLayer.Service
@@ -71,15 +73,16 @@ namespace BusinessLayer.Service
         }
 
 
-
         public async Task DeleteTourAsync(Guid tourModelId)
         {
             await _tourRepository.DeleteTourAsync(tourModelId);
         }
-    
+
+
+
         //public async Task HandleSubmit()
         //{
-            
+
 
         //    try
         //    {

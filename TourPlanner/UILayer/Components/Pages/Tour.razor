@@ -1,6 +1,9 @@
 ﻿@page "/tour"
 @using BusinessLayer.Service.Interface
 @using Model
+@using iText.Kernel.Pdf
+@using iText.Layout
+@using iText.Layout.Element
 @inject ITourService TourService
 @inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
@@ -105,6 +108,9 @@
                                         </button>
                                         <button class="btn btn-info btn-sm" @onclick="() => ShowTourInfo(tourModel)">
                                             <i class="fas fa-info-circle"></i>
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm" @onclick="() => GenerateReport(tourModel)">
+                                            <i class="fas fa-file-pdf"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -224,6 +230,51 @@
         StateHasChanged();
     }
 
+    private async Task GenerateReport(TourModel tourModel)
+    {
+        var fileName = $"{tourModel.Name}_Report.pdf";
+        using (var memoryStream = new MemoryStream())
+        {
+            using (var writer = new PdfWriter(memoryStream))
+            {
+                using (var pdf = new PdfDocument(writer))
+                {
+                    var document = new Document(pdf);
+
+                    document.Add(new Paragraph("Tour Report"));
+                    document.Add(new Paragraph($"Name: {tourModel.Name}"));
+                    document.Add(new Paragraph($"Description: {tourModel.Description}"));
+                    document.Add(new Paragraph($"From: {tourModel.FromLocation}"));
+                    document.Add(new Paragraph($"To: {tourModel.ToLocation}"));
+                    document.Add(new Paragraph($"Transport Type: {tourModel.TransportType}"));
+                    document.Add(new Paragraph($"Estimated Time: {tourModel.EstimatedTime}"));
+                    document.Add(new Paragraph($"Distance: {tourModel.Distance}"));
+
+
+                    // TourLogs hinzufügen
+                    if (tourModel.TourLogs != null && tourModel.TourLogs.Any())
+                    {
+                        document.Add(new Paragraph("Tour Logs:"));
+                        foreach (var log in tourModel.TourLogs)
+                        {
+                            document.Add(new Paragraph($"Date: {log.DateTime.ToShortDateString()}"));
+                            document.Add(new Paragraph($"Difficulty: {log.Difficulty}"));
+                            document.Add(new Paragraph($"Rating: {log.Rating}"));
+                            document.Add(new Paragraph($"Comment: {log.Comment}"));
+                        }
+                    }
+
+                    document.Close();
+                }
+            }
+
+            var fileBytes = memoryStream.ToArray();
+            var base64File = Convert.ToBase64String(fileBytes);
+            await JSRuntime.InvokeVoidAsync("downloadFile", fileName, base64File);
+        }
+    }
+
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -236,6 +287,13 @@
 }
 
 <script>
+    window.downloadFile = (fileName, base64Data) => {
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = `data:application/pdf;base64,${base64Data}`;
+        link.click();
+    };
+
     window.initializeMap = async (mapId, directions) => {
         // Funktion zum Laden von Leaflet.js-Skript
         const loadLeaflet = () => {
