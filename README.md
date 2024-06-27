@@ -42,7 +42,11 @@ The Data Access Layer is responsible for interacting with the PostgreSQL databas
 
 The Model Layer defines the data structures used throughout the application. It includes classes representing the entities (e.g., Tour, TourLog) and their properties. The model is used by both the BL and DAL to ensure consistency in the data being processed and stored. This layer ensures that data integrity is maintained and that the application can evolve without breaking existing functionality.
 
+
+
 #### use cases (is missing completely)
+
+
 
 #### UX (Wireframe)
 
@@ -62,6 +66,8 @@ In the second wireframe, the header remains consistent with the first, maintaini
 
 The user experience (UX) focuses on consistency, as both wireframes share a similar layout to help users navigate the application without confusion. The header and sidebar elements are stable, providing a familiar context. Navigation is facilitated through the use of buttons and search functionality, allowing easy access to different logs and tour details. Information display is handled by the right-side details sections with maps and text, ensuring that users can view relevant details without leaving the main page. Primary action buttons are prominently placed, making it straightforward for users to add or edit entries.
 
+
+
 ####  library decisions
 
 * **ORM Library:** Entity Framework (EF) Core because Nahi has already gained experience with this framework at work.
@@ -75,6 +81,8 @@ The user experience (UX) focuses on consistency, as both wireframes share a simi
 - **Performance Considerations**: Optimizing ORM usage and managing logging granularity were essential for maintaining performance.
 - **Handling External Services**: Integrating with external APIs required robust error handling and planning for rate limits.
 - **Report Generation**: Using a powerful library like iText7 made complex report creation manageable once its features were understood.
+
+
 
 #### implemented design pattern
 
@@ -106,3 +114,9 @@ The MVVM Pattern separates the user interface (View) from the business logic (Vi
 - **Model**: Represents the data structures (e.g., Tour, TourLog) used in the application.
 - **View**: Consists of XAML files that define the UI layout and bindings.
 - **ViewModel**: Contains the business logic and handles data binding between the Model and the View.
+
+
+
+#### unit testing decisions
+
+In the `MappingProfileTests` class, unit tests are structured to verify the accuracy of AutoMapper mappings between various entity and model classes. The tests ensure that configurations are valid, and each property of mapped objects is correctly transferred. The `TourServiceTests` and `TourLogServiceTests` classes verify that the service methods interact correctly with the repositories and accurately perform CRUD operations on tour and tour log entities, respectively. These tests mock repository dependencies to isolate and test the business logic of the service methods. The overall approach ensures that mappings and service methods are robust, correctly implemented, and meet the expected behaviors.

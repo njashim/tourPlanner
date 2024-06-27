@@ -8,7 +8,8 @@ using System.Collections.Generic;
 
 namespace BusinessLayer.Tests.Mapping
 {
-    public class MappingProfileTests
+    [TestFixture]
+    public class MappingTests
     {
         private IMapper _mapper;
 
