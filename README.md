@@ -3,6 +3,8 @@ by Nahi Islam Jashim & Bayram-Enes Yenipinar | for our fourth semester project
 
 GitHub-Repository: https://github.com/njashim/tourPlanner
 
+**tracked time: tbd**
+
 
 
 #### app architecture (class diagrams are missing)
@@ -120,3 +122,10 @@ The MVVM Pattern separates the user interface (View) from the business logic (Vi
 #### unit testing decisions
 
 In the `MappingProfileTests` class, unit tests are structured to verify the accuracy of AutoMapper mappings between various entity and model classes. The tests ensure that configurations are valid, and each property of mapped objects is correctly transferred. The `TourServiceTests` and `TourLogServiceTests` classes verify that the service methods interact correctly with the repositories and accurately perform CRUD operations on tour and tour log entities, respectively. These tests mock repository dependencies to isolate and test the business logic of the service methods. The overall approach ensures that mappings and service methods are robust, correctly implemented, and meet the expected behaviors.
+
+
+
+#### unique feature
+
+We have implemented a page for a car rental service where users can choose between three different car models. Depending on the model, the price varies, being either more expensive or cheaper. Users can select the rental period by choosing the start and end dates for the rental.
+
