@@ -75,3 +75,34 @@ The user experience (UX) focuses on consistency, as both wireframes share a simi
 - **Performance Considerations**: Optimizing ORM usage and managing logging granularity were essential for maintaining performance.
 - **Handling External Services**: Integrating with external APIs required robust error handling and planning for rate limits.
 - **Report Generation**: Using a powerful library like iText7 made complex report creation manageable once its features were understood.
+
+#### implemented design pattern
+
+**Repository Pattern**
+
+The Repository Pattern is used to abstract and encapsulate data access logic, providing a clean separation between the business logic and data access layers. It centralizes data operations, making it easier to manage and maintain.
+
+**Implementation in Tour Planner:**
+
+- **TourRepository and TourLogRepository**: These classes handle CRUD operations for tours and tour logs.
+- **Interface Definition**: `ITourRepository` and `ITourLogRepository` define the contract for these repositories, ensuring consistency and flexibility.
+- **Entity Framework Core**: Used within the repository classes to interact with the PostgreSQL database, providing efficient and simplified data access.
+
+**Service Pattern**
+
+The Service Pattern encapsulates business logic into service classes, promoting reusability and separation of concerns. Services provide a centralized way to manage business operations and can be used across different parts of the application.
+
+**Implementation in Tour Planner:**
+
+- **TourService**: Manages tour-related operations such as creation, modification, deletion, and retrieval of tours.
+- **TourLogService**: Handles operations related to tour logs.
+
+**Model-View-ViewModel (MVVM) Pattern**
+
+The MVVM Pattern separates the user interface (View) from the business logic (ViewModel) and data (Model). It is particularly suitable for Blazor applications, promoting a clean and maintainable codebase.
+
+**Implementation in Tour Planner:**
+
+- **Model**: Represents the data structures (e.g., Tour, TourLog) used in the application.
+- **View**: Consists of XAML files that define the UI layout and bindings.
+- **ViewModel**: Contains the business logic and handles data binding between the Model and the View.
