@@ -61,3 +61,17 @@ The main content area is divided into two sections. At the top, there are six re
 In the second wireframe, the header remains consistent with the first, maintaining the same web browser elements for uniformity and ease of navigation. The sidebar on the left is similar but is labeled "Tour" instead of "Tour Log," indicating a different section of the application. The main content area again has a top section with rectangular buttons, but this time there are only four, suggesting fewer options or a more focused set of actions for this section. Below these buttons, two primary action buttons are placed similarly to the first wireframe for adding or modifying tour details. The search bar is positioned below the buttons for searching within the tour details. The list view area displays search results or tour entries. On the right, a "Tour Details" section features a map and related text information, analogous to the "Tour Log Details" section in the first wireframe.
 
 The user experience (UX) focuses on consistency, as both wireframes share a similar layout to help users navigate the application without confusion. The header and sidebar elements are stable, providing a familiar context. Navigation is facilitated through the use of buttons and search functionality, allowing easy access to different logs and tour details. Information display is handled by the right-side details sections with maps and text, ensuring that users can view relevant details without leaving the main page. Primary action buttons are prominently placed, making it straightforward for users to add or edit entries.
+
+####  library decisions
+
+* **ORM Library:** Entity Framework (EF) Core because Nahi has already gained experience with this framework at work.
+* **Logging Library:** log4net because it has already been suggested by the specification
+* **Report Generation Library:** iText7 because it was introduced in the self-study
+
+#### lessons learned
+
+- **Effective Use of Libraries**: Choosing the right libraries like Entity Framework Core, log4net, and iText7 streamlined development and enhanced functionality.
+- **Importance of Clear Separation**: Implementing a layered architecture improved code maintainability and clarity.
+- **Performance Considerations**: Optimizing ORM usage and managing logging granularity were essential for maintaining performance.
+- **Handling External Services**: Integrating with external APIs required robust error handling and planning for rate limits.
+- **Report Generation**: Using a powerful library like iText7 made complex report creation manageable once its features were understood.
