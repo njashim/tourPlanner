@@ -5,7 +5,7 @@ GitHub-Repository: https://github.com/njashim/tourPlanner
 
 tracked time:  62 hours
 
-#### app architecture (class diagrams are missing)
+#### app architecture
 
 Our Tour Planner application is designed to manage various tours and their associated logs. It uses a multi-layered architecture consisting of the following layers: UI Layer, Business Layer (BL), Data Access Layer (DAL), and Model Layer.
 
@@ -44,7 +44,76 @@ The Model Layer defines the data structures used throughout the application. It 
 
 
 
-#### use cases (is missing completely)
+#### use cases
+
+##### Use Case 1: Create Tour
+
+**Actors:** User
+
+**Description:** The user creates a new tour by providing necessary details.
+
+**Basic Flow:**
+
+1. The user selects the option to create a new tour.
+2. The system prompts the user to enter tour details (name, description, start point, end point, transport type, distance, estimated time, and route image).
+3. The user submits the details.
+4. The system saves the tour information in the database and retrieves additional data using OpenRouteService APIs.
+5. The system confirms the tour creation to the user.
+
+##### Use Case 2: Manage Tours
+
+**Actors:** User
+
+**Description:** The user can view, edit, or delete existing tours.
+
+**Basic Flow:**
+
+1. The user selects the option to view tours.
+2. The system displays a list of existing tours.
+3. The user chooses to edit or delete a tour.
+4. If editing, the user modifies the necessary details and submits them.
+5. The system updates the tour information in the database.
+6. If deleting, the user confirms the deletion.
+7. The system removes the tour from the database.
+
+##### Use Case 3: Log Tour
+
+**Actors:** User
+
+**Description:** The user logs a completed tour.
+
+**Basic Flow:**
+
+1. The user selects an existing tour to log.
+2. The system prompts the user to enter log details (date/time, comment, difficulty, total distance, total time, rating).
+3. The user submits the log.
+4. The system saves the log information in the database.
+5. The system updates the tour's computed attributes based on the new log.
+
+##### Use Case 4: Full-Text Search
+
+**Actors:** User
+
+**Description:** The user performs a full-text search on tours and logs.
+
+**Basic Flow:**
+
+1. The user enters a search query.
+2. The system processes the query and searches through the tours and logs data.
+3. The system displays the search results to the user.
+
+##### Full-Text Search Sequence
+
+This sequence just describes the steps taken when a user performs a full-text search on the tour and log data.
+
+**Basic Flow:**
+
+1. **User**: Initiates the search by entering a query.
+2. **UI Layer**: Sends the query to the Business Layer.
+3. **Business Layer**: Processes the query, interacts with the Data Access Layer to fetch the relevant data.
+4. **Data Access Layer**: Executes the search on the database and retrieves matching records.
+5. **Business Layer**: Computes any additional required data (e.g., derived attributes).
+6. **UI Layer**: Displays the search results to the user.
 
 
 
@@ -126,4 +195,3 @@ In the `MappingProfileTests` class, unit tests are structured to verify the accu
 #### unique feature
 
 We have implemented a page for a car rental service where users can choose between three different car models. Depending on the model, the price varies, being either more expensive or cheaper. Users can select the rental period by choosing the start and end dates for the rental.
-
