@@ -3,9 +3,7 @@ by Nahi Islam Jashim & Bayram-Enes Yenipinar | for our fourth semester project
 
 GitHub-Repository: https://github.com/njashim/tourPlanner
 
-**tracked time: tbd**
-
-
+tracked time:  62 hours
 
 #### app architecture (class diagrams are missing)
 
